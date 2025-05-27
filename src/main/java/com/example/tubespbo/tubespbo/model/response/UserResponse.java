@@ -1,4 +1,4 @@
-package com.example.tubespbo.tubespbo.model;
+package com.example.tubespbo.tubespbo.model.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
