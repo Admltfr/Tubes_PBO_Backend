@@ -1,7 +1,10 @@
 package com.example.tubespbo.tubespbo.repository;
 
-import com.example.tubespbo.tubespbo.entity.Kereta;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface KeretaRepository extends JpaRepository<Kereta, String> {
+import com.example.tubespbo.tubespbo.entity.KeretaEntity;
+
+public interface KeretaRepository extends JpaRepository<KeretaEntity, Long> {
+    KeretaEntity findByAsal(String asal);
+    KeretaEntity findByTujuan(String tujuan);
 }

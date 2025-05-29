@@ -1,48 +1,31 @@
 package com.example.tubespbo.tubespbo.controller;
 
-import com.example.tubespbo.tubespbo.entity.Kereta;
-import com.example.tubespbo.tubespbo.repository.KeretaRepository;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
-
-// import com.example.tubespbo.tubespbo.model.request.KeretaRequest;
-// import com.example.tubespbo.tubespbo.model.request.JadwalRequest;
-
-
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.example.tubespbo.tubespbo.model.response.KeretaResponse;
+import com.example.tubespbo.tubespbo.service.KeretaService;
+
 @RestController
-@RequestMapping("/kereta")
+@RequestMapping("/api/trains")
 public class KeretaController {
-
     @Autowired
-    private KeretaRepository keretaRepo;
+    private KeretaService keretaService;
 
-    // USER - lihat semua kereta
-    @GetMapping("/list")
-    public List<Kereta> getAllKereta() {
-        return keretaRepo.findAll();
+    @GetMapping
+    @PreAuthorize("hasAuthority('ADMIN')")
+    public List<KeretaResponse> getAllKereta() {
+        return keretaService.getAllKereta();
     }
 
-    // ADMIN - tambah kereta
-    @PostMapping("/add")
-    public Kereta addKereta(@RequestBody Kereta k) {
-        return keretaRepo.save(k);
-    }
-
-    // ADMIN - hapus kereta
-    @DeleteMapping("/delete/{id}")
-    public void deleteKereta(@PathVariable String id) {
-        keretaRepo.deleteById(id);
-    }
-
-    // ADMIN - update kereta
-    @PutMapping("/update/{id}")
-    public Kereta updateKereta(@PathVariable String id, @RequestBody Kereta updated) {
-        return keretaRepo.findById(id).map(k -> {
-            k.setAsal(updated.getAsal());
-            k.setTujuan(updated.getTujuan());
-            return keretaRepo.save(k);
-        }).orElseThrow();
-    }
+    // @GetMapping("/id")
+    // @PreAuthorize("isAuthenticated()")
+    // public KeretaResponse getCurrentKereta(String asal) {
+    //     return keretaService.getKeretaByAsal(asal);
+    // }
 }
