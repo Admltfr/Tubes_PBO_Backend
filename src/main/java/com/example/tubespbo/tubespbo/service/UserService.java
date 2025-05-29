@@ -16,16 +16,19 @@ public class UserService {
     @Autowired
     private UserRepository userRepository;
 
+    @Autowired
+    private UserMapper userMapper;
+
     public List<UserResponse> getAllUsers() {
         return userRepository.findAll()
                 .stream()
-                .map(UserMapper::ToUserResponseMapper)
+                .map(userMapper::ToUserResponseMapper)
                 .collect(Collectors.toList());
     }
 
     public UserResponse getUserByUsername(String username) {
         UserEntity user = userRepository.findByUsername(username);
         if (user == null) return null;
-        return UserMapper.ToUserResponseMapper(user);
+        return userMapper.ToUserResponseMapper(user);
     }
 }

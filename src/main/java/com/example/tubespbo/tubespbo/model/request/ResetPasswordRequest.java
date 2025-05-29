@@ -17,8 +17,8 @@ public class ResetPasswordRequest {
     @Email(message = "Format email tidak valid")
     private String email;
 
-    @NotBlank(message = "Reset token tidak boleh kosong")
-    private String resetToken;
+    // @NotBlank(message = "Reset token tidak boleh kosong")
+    // private String resetToken;
 
     @NotBlank(message = "password baru tidak boleh kosong")
     @Size(min = 8, max = 30, message = "Password harus berada diantara 8 sampai 20 karakter")

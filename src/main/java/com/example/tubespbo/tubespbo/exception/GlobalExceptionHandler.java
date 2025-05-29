@@ -47,7 +47,8 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ApiResponse<Object>> handleValidationException(MethodArgumentNotValidException ex) {
         StringBuilder errorMsg = new StringBuilder();
         ex.getBindingResult().getFieldErrors().forEach(error ->
-            errorMsg.append(error.getField()).append(": ").append(error.getDefaultMessage()).append("; ")
+            errorMsg.append(error.getDefaultMessage())
+            // errorMsg.append(error.getField()).append(": ").append(error.getDefaultMessage())
         );
         ApiResponse<Object> response = ApiResponse.builder()
                 .status(HttpStatus.BAD_REQUEST)

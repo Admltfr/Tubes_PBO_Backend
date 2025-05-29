@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.example.tubespbo.tubespbo.exception.ApiException;
 import com.example.tubespbo.tubespbo.exception.AuthException;
+import com.example.tubespbo.tubespbo.mapper.ApiResponseMapper;
 import com.example.tubespbo.tubespbo.model.request.LoginRequest;
 import com.example.tubespbo.tubespbo.model.request.RegisterRequest;
 import com.example.tubespbo.tubespbo.model.request.ResetPasswordRequest;
@@ -27,15 +28,14 @@ public class AuthController {
     @Autowired
     private AuthService authService;
 
+    @Autowired
+    private ApiResponseMapper responseBuilder;
+
     @PostMapping("/register")
     public ResponseEntity<ApiResponse<RegisterResponse>> register(@RequestBody @Valid RegisterRequest request) {
         try {
             RegisterResponse result = authService.register(request);
-            ApiResponse<RegisterResponse> response = ApiResponse.<RegisterResponse>builder()
-                    .status(HttpStatus.OK)
-                    .message("Register sukses")
-                    .data(result)
-                    .build();
+            ApiResponse<RegisterResponse> response = responseBuilder.ToApiResponse(HttpStatus.OK, "Registrasi sukses", result);
             return ResponseEntity.ok(response);
         } catch (ApiException ex) {
             throw ex;
@@ -51,11 +51,7 @@ public class AuthController {
             if (token == null) {
                 throw new AuthException("Username atau password salah");
             }
-            ApiResponse<String> response = ApiResponse.<String>builder()
-                    .status(HttpStatus.OK)
-                    .message("Login sukses")
-                    .data(token)
-                    .build();
+            ApiResponse<String> response = responseBuilder.ToApiResponse(HttpStatus.OK, "Login sukses", token);
             return ResponseEntity.ok(response);
         } catch (AuthException ex) {
             throw ex;
@@ -68,11 +64,7 @@ public class AuthController {
     public ResponseEntity<ApiResponse<String>> logout() {
         try {
             String result = authService.logout();
-            ApiResponse<String> response = ApiResponse.<String>builder()
-                    .status(HttpStatus.OK)
-                    .message("Logout sukses")
-                    .data(result)
-                    .build();
+            ApiResponse<String> response = responseBuilder.ToApiResponse(HttpStatus.OK, "Logout sukses", result);
             return ResponseEntity.ok(response);
         } catch (Exception ex) {
             throw new ApiException("Terjadi kesalahan saat logout");
@@ -84,11 +76,7 @@ public class AuthController {
     public ResponseEntity<ApiResponse<String>> resetPassword(@RequestBody @Valid ResetPasswordRequest request) {
         try {
             String result = authService.resetPassword(request.getEmail(), request.getNewPassword());
-            ApiResponse<String> response = ApiResponse.<String>builder()
-                    .status(HttpStatus.OK)
-                    .message("Reset password berhasil")
-                    .data(result)
-                    .build();
+            ApiResponse<String> response = responseBuilder.ToApiResponse(HttpStatus.OK, "Reset password berhasil", result);
             return ResponseEntity.ok(response);
         } catch (ApiException ex) {
             throw ex;

@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.example.tubespbo.tubespbo.exception.ApiException;
+import com.example.tubespbo.tubespbo.mapper.ApiResponseMapper;
 import com.example.tubespbo.tubespbo.model.response.ApiResponse;
 import com.example.tubespbo.tubespbo.model.response.UserResponse;
 import com.example.tubespbo.tubespbo.service.UserService;
@@ -23,27 +25,30 @@ public class UserController {
     @Autowired
     private UserService userService;
 
+    @Autowired
+    private ApiResponseMapper responseBuilder;
+
     @GetMapping
     @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<ApiResponse<List<UserResponse>>> getAllUsers() {
-        List<UserResponse> users = userService.getAllUsers();
-        ApiResponse<List<UserResponse>> response = ApiResponse.<List<UserResponse>>builder()
-                .status(HttpStatus.OK)
-                .message("Berhasil mengambil semua user")
-                .data(users)
-                .build();
-        return ResponseEntity.ok(response);
+        try {
+            List<UserResponse> users = userService.getAllUsers();
+            ApiResponse<List<UserResponse>> response = responseBuilder.ToApiResponse(HttpStatus.OK, "Berhasil mengambil data semua user", users);
+            return ResponseEntity.ok(response);
+        } catch (Exception ex) {
+            throw new ApiException("Gagal mengambil data semua user");
+        }
     }
 
     @GetMapping("/me")
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<ApiResponse<UserResponse>> getCurrentUser(@AuthenticationPrincipal UserDetails userDetails) {
-        UserResponse user = userService.getUserByUsername(userDetails.getUsername());
-        ApiResponse<UserResponse> response = ApiResponse.<UserResponse>builder()
-                .status(HttpStatus.OK)
-                .message("Berhasil mengambil data user")
-                .data(user)
-                .build();
-        return ResponseEntity.ok(response);
+        try {
+            UserResponse user = userService.getUserByUsername(userDetails.getUsername());
+            ApiResponse<UserResponse> response = responseBuilder.ToApiResponse(HttpStatus.OK, "Berhasil mengambil data user", user);
+            return ResponseEntity.ok(response);
+        } catch (Exception ex) {
+            throw new ApiException("Gagal mengambil data user");
+        }
     }
 }
