@@ -35,7 +35,7 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
-    // klo ini bisa jadi validator dari request, lihat anotasi @Valdi di parameter controller
+    // klo ini bisa jadi validator dari request, lihat anotasi @Valid di parameter controller
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ApiResponse<Object>> handleValidationException(MethodArgumentNotValidException ex) {
         StringBuilder errorMsg = new StringBuilder();

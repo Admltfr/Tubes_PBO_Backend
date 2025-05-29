@@ -1,12 +1,9 @@
 package com.example.tubespbo.tubespbo.service;
-
-//import com.example.tubespbo.tubespbo.entity.Jadwal;
-//import com.example.tubespbo.tubespbo.entity.Kereta;
 import com.example.tubespbo.tubespbo.entity.PemesananEntity;
-//import com.example.tubespbo.tubespbo.entity.PenumpangEntity;
-//import com.example.tubespbo.tubespbo.entity.UserEntity;
+import com.example.tubespbo.tubespbo.entity.PenumpangEntity;
+import com.example.tubespbo.tubespbo.entity.UserEntity;
 import com.example.tubespbo.tubespbo.repository.PemesananRepository;
-//import com.example.tubespbo.tubespbo.repository.UserRepository;
+import com.example.tubespbo.tubespbo.repository.UserRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -23,7 +20,7 @@ public class PemesananService {
 
     public void lihatKursi(Long pemesananId) {
         Optional<PemesananEntity> optionalPemesanan = pemesananRepository.findById(pemesananId);
-
+        
         if (optionalPemesanan.isPresent()) {
             PemesananEntity pemesanan = optionalPemesanan.get();
             Jadwal jadwal = pemesanan.getJadwal();

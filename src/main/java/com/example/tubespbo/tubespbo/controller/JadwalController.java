@@ -32,7 +32,7 @@ public class JadwalController {
 
     // Tambah jadwal
     @PostMapping("/add")
-    public Jadwal addJadwal(@RequestParam String keretaId,
+    public Jadwal addJadwal(@RequestParam Long keretaId,
                             @RequestParam Date tanggal,
                             @RequestParam Date waktuKeberangkatan,
                             @RequestBody List<String> rute) {
