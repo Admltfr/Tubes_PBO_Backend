@@ -12,7 +12,7 @@ import com.example.tubespbo.tubespbo.model.response.ApiResponse;
 public class ApiResponseMapper {
     public <T> ApiResponse<T> ToApiResponse(HttpStatus status, String message, T data) {
         return ApiResponse.<T>builder()
-                .status(HttpStatus.OK)
+                .status(status)
                 .message(message)
                 .data(data)
                 .build();
