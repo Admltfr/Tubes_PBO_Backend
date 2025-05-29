@@ -11,6 +11,7 @@ import com.example.tubespbo.tubespbo.entity.AdminEntity;
 import com.example.tubespbo.tubespbo.entity.UserEntity;
 import com.example.tubespbo.tubespbo.repository.UserRepository;
 
+//user detail yang dibuat custom, kayaknya kurang lebih dia melakukan validasi role
 @Service
 public class CustomUserDetailsService implements UserDetailsService {
     @Autowired
