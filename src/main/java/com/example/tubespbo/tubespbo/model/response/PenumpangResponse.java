@@ -1,0 +1,18 @@
+package com.example.tubespbo.tubespbo.model.response;
+
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
+public class PenumpangResponse {
+    private String username;
+
+    private String email;
+
+    private String nomorTelepon;
+}
