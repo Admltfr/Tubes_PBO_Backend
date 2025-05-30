@@ -7,8 +7,9 @@ import java.util.Date;
 public class Jadwal {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    private String id;
+    //@GeneratedValue(strategy = GenerationType.UUID)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
     @Temporal(TemporalType.TIMESTAMP)
     private Date tanggal;
@@ -20,18 +21,18 @@ public class Jadwal {
 
     @ManyToOne
     @JoinColumn(name = "kereta_id")
-    private Kereta kereta;
+    private KeretaEntity kereta;
 
     public Jadwal() {}
 
-    public Jadwal(Date tanggal, Date waktuKeberangkatan, String[] rute, Kereta kereta) {
+    public Jadwal(Date tanggal, Date waktuKeberangkatan, String[] rute, KeretaEntity kereta) {
         this.tanggal = tanggal;
         this.waktuKeberangkatan = waktuKeberangkatan;
         this.rute = rute;
         this.kereta = kereta;
     }
 
-    public String getId() {
+    public Long getId() {
         return id;
     }
 
@@ -59,15 +60,22 @@ public class Jadwal {
         this.rute = rute;
     }
 
-    public Kereta getKereta() {
+    public KeretaEntity getKereta() {
         return kereta;
     }
 
-    public void setKereta(Kereta kereta) {
+    public void setKereta(KeretaEntity kereta) {
         this.kereta = kereta;
     }
 
     public String getWaktu() {
         return waktuKeberangkatan != null ? waktuKeberangkatan.toString() : null;
+    }
+
+    public String getKeretaId() {
+        if (kereta != null && kereta.getId() != null) {
+            return String.valueOf(kereta.getId());
+        }
+        return null;
     }
 }
