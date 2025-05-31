@@ -1,7 +1,7 @@
 package com.example.tubespbo.tubespbo.controller;
 
 import com.example.tubespbo.tubespbo.entity.Jadwal;
-import com.example.tubespbo.tubespbo.entity.Kereta;
+import com.example.tubespbo.tubespbo.entity.KeretaEntity;
 import com.example.tubespbo.tubespbo.repository.JadwalRepository;
 import com.example.tubespbo.tubespbo.repository.KeretaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,7 +37,7 @@ public class JadwalController {
                             @RequestParam Date waktuKeberangkatan,
                             @RequestBody List<String> rute) {
 
-        Optional<Kereta> keretaOpt = keretaRepo.findById(keretaId);
+        Optional<KeretaEntity> keretaOpt = keretaRepo.findById(keretaId);
         if (keretaOpt.isEmpty()) {
             throw new RuntimeException("Kereta tidak ditemukan");
         }
@@ -48,13 +48,13 @@ public class JadwalController {
 
     // Hapus jadwal
     @DeleteMapping("/delete/{id}")
-    public void deleteJadwal(@PathVariable String id) {
+    public void deleteJadwal(@PathVariable Long id) {
         jadwalRepo.deleteById(id);
     }
 
     // Update jadwal
     @PutMapping("/update/{id}")
-    public Jadwal updateJadwal(@PathVariable String id,
+    public Jadwal updateJadwal(@PathVariable Long id,
                                @RequestParam Date tanggal,
                                @RequestParam Date waktuKeberangkatan,
                                @RequestBody List<String> rute) {

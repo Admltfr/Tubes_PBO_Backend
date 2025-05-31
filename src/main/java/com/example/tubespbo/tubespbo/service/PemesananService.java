@@ -1,65 +1,82 @@
 package com.example.tubespbo.tubespbo.service;
+
+import java.util.Optional;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.example.tubespbo.tubespbo.entity.Jadwal;
 import com.example.tubespbo.tubespbo.entity.PemesananEntity;
 import com.example.tubespbo.tubespbo.entity.PenumpangEntity;
 import com.example.tubespbo.tubespbo.entity.UserEntity;
+import com.example.tubespbo.tubespbo.exception.ApiException;
+import com.example.tubespbo.tubespbo.mapper.PemesananResponseMapper;
+import com.example.tubespbo.tubespbo.model.request.PemesananRequest;
+import com.example.tubespbo.tubespbo.model.response.PemesananResponse;
+import com.example.tubespbo.tubespbo.repository.JadwalRepository;
 import com.example.tubespbo.tubespbo.repository.PemesananRepository;
 import com.example.tubespbo.tubespbo.repository.UserRepository;
-import jakarta.transaction.Transactional;
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.Optional;
+import jakarta.transaction.Transactional;
 
 @Service
-@RequiredArgsConstructor
 public class PemesananService {
 
     private final PemesananRepository pemesananRepository;
-    private final UserRepository penumpangRepository;
+    private final UserRepository userRepository;
+    private final JadwalRepository jadwalRepository;
+    private final PemesananResponseMapper pemesananResponseMapper;
 
-    public void lihatKursi(Long pemesananId) {
-        Optional<PemesananEntity> optionalPemesanan = pemesananRepository.findById(pemesananId);
-        
-        if (optionalPemesanan.isPresent()) {
-            PemesananEntity pemesanan = optionalPemesanan.get();
-            Jadwal jadwal = pemesanan.getJadwal();
-            if (jadwal != null && jadwal.getKereta() != null) {
-                Kereta k = jadwal.getKereta();
-                System.out.println("Kursi tersedia untuk kelas " + pemesanan.getKelas() + 
-                    " ID kereta: " + k.getID() +
-                    " dari " + k.getAsal() +
-                    " ke " + k.getTujuan());
-            } else {
-                System.out.println("Data kereta tidak tersedia ");
-            }
-        } else {
-            System.out.println("Pemesanan dengan ID " + pemesananId + " tidak ditemukan.");
-        }
-    }
-
-    public void lihatHarga(Long pemesananId) {
-        Optional<PemesananEntity> optionalPemesanan = pemesananRepository.findById(pemesananId);
-        if (optionalPemesanan.isPresent()) {
-            double harga = optionalPemesanan.get().getHarga();
-            System.out.println("Harga tiket untuk pemesanan ID " + pemesananId + ": Rp" + harga);
-        } else {
-            System.out.println("Pemesanan dengan ID " + pemesananId + " tidak ditemukan.");
-        }
+    @Autowired
+    public PemesananService(PemesananRepository pemesananRepository,
+                           UserRepository userRepository,
+                           JadwalRepository jadwalRepository,
+                           PemesananResponseMapper pemesananResponseMapper) {
+        this.pemesananRepository = pemesananRepository;
+        this.userRepository = userRepository;
+        this.jadwalRepository = jadwalRepository;
+        this.pemesananResponseMapper = pemesananResponseMapper;
     }
 
     @Transactional
-    public void addRiwayat(Jadwal jadwal, Long penumpangId) {
-    Optional<UserEntity> optionalUser = penumpangRepository.findById(penumpangId);
-
-    if (optionalUser.isPresent() && optionalUser.get() instanceof PenumpangEntity) {
+    public PemesananResponse createPemesanan(PemesananRequest request) {
+        Optional<UserEntity> optionalUser = userRepository.findById(request.getPenumpangId());
+        if (optionalUser.isEmpty() || !(optionalUser.get() instanceof PenumpangEntity)) {
+            throw new ApiException("Penumpang dengan ID " + request.getPenumpangId() + " tidak ditemukan atau bukan penumpang.");
+        }
         PenumpangEntity penumpang = (PenumpangEntity) optionalUser.get();
-        penumpang.getRiwayat().add(jadwal);
-        penumpangRepository.save(penumpang);
-        System.out.println("Jadwal ditambahkan untuk penumpang dengan ID: " + penumpangId);
-    } else {
-        System.out.println("Penumpang dengan ID: " + penumpangId + " tidak ditemukan atau bukan penumpang.");
-    }
-}
 
+        Optional<Jadwal> optionalJadwal = jadwalRepository.findById(request.getJadwalId());
+        if (optionalJadwal.isEmpty()) {
+            throw new ApiException("Jadwal dengan ID " + request.getJadwalId() + " tidak ditemukan.");
+        }
+        Jadwal jadwal = optionalJadwal.get();
+
+        PemesananEntity pemesanan = new PemesananEntity();
+        pemesanan.setPenumpang(penumpang);
+        pemesanan.setJadwal(jadwal);
+        pemesanan.setKelas(request.getKelas());
+        pemesanan.setHarga
+        (request.getHarga());
+
+        PemesananEntity saved = pemesananRepository.save(pemesanan);
+
+        return pemesananResponseMapper.toPemesananResponse(saved);
+    }
+
+    public PemesananResponse getPemesananById(Long id) {
+        Optional<PemesananEntity> optionalPemesanan = pemesananRepository.findById(id);
+        if (optionalPemesanan.isEmpty()) {
+            throw new ApiException("Pemesanan dengan ID " + id + " tidak ditemukan.");
+        }
+        return pemesananResponseMapper.toPemesananResponse(optionalPemesanan.get());
+    }
+
+    @Transactional
+    public void deletePemesanan(Long id) {
+        if (!pemesananRepository.existsById(id)) {
+            throw new ApiException("Pemesanan dengan ID " + id + " tidak ditemukan.");
+        }
+        pemesananRepository.deleteById(id);
+    }
 }

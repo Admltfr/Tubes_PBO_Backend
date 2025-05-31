@@ -1,6 +1,5 @@
 package com.example.tubespbo.tubespbo.entity;
 
-import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -13,6 +12,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 @Data
 @Entity
@@ -30,10 +30,12 @@ public class PemesananEntity {
 
     private String kelas;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne
     @JoinColumn(name = "user_id")
+    @ToString.Exclude  // mencegah loop infinite saat toString() semoga works
     private PenumpangEntity penumpang;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne
+    @ToString.Exclude
     private Jadwal jadwal;
 }
