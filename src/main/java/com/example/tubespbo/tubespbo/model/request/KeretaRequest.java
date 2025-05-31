@@ -1,29 +1,21 @@
 package com.example.tubespbo.tubespbo.model.request;
 
+import jakarta.validation.constraints.NotBlank;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
 public class KeretaRequest {
-    private String id;
+    private Long id;
+
+    @NotBlank(message = "Asal tidak boleh kosong")
     private String asal;
+
+    @NotBlank(message = "Tujuan tidak boleh kosong")
     private String tujuan;
-
-    // Getter & Setter
-    public String getId() {
-        return id;
-    }
-    public void setId(String id) {
-        this.id = id;
-    }
-
-    public String getAsal() {
-        return asal;
-    }
-    public void setAsal(String asal) {
-        this.asal = asal;
-    }
-
-    public String getTujuan() {
-        return tujuan;
-    }
-    public void setTujuan(String tujuan) {
-        this.tujuan = tujuan;
-    }
 }
