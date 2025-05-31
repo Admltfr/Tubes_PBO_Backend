@@ -17,5 +17,5 @@ public class JadwalResponse {
     private Date tanggal;
     private Date waktuKeberangkatan;
     private List<String> rute;
-    private String keretaId;
+    private Long keretaId;
 }

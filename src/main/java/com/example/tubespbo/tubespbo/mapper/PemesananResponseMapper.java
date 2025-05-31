@@ -2,8 +2,8 @@ package com.example.tubespbo.tubespbo.mapper;
 
 import com.example.tubespbo.tubespbo.entity.PemesananEntity;
 import com.example.tubespbo.tubespbo.model.response.PemesananResponse;
-//import com.example.tubespbo.tubespbo.mapper.JadwalResponseMapper;
-//import com.example.tubespbo.tubespbo.mapper.PenumpangResponseMapper;
+import com.example.tubespbo.tubespbo.mapper.JadwalResponseMapper;
+import com.example.tubespbo.tubespbo.mapper.response.PenumpangResponseMapper;
 
 public class PemesananResponseMapper {
 

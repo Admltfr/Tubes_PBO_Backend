@@ -32,7 +32,7 @@ public class PemesananEntity {
 
     @ManyToOne
     @JoinColumn(name = "user_id")
-    @ToString.Exclude  // mencegah loop infinite saat toString()
+    @ToString.Exclude  // mencegah loop infinite saat toString() semoga works
     private PenumpangEntity penumpang;
 
     @ManyToOne
