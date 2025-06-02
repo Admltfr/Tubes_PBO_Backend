@@ -5,7 +5,7 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.example.tubespbo.tubespbo.entity.Jadwal;
+import com.example.tubespbo.tubespbo.entity.JadwalEntity;
 import com.example.tubespbo.tubespbo.entity.PemesananEntity;
 import com.example.tubespbo.tubespbo.entity.PenumpangEntity;
 import com.example.tubespbo.tubespbo.entity.UserEntity;
@@ -46,11 +46,11 @@ public class PemesananService {
         }
         PenumpangEntity penumpang = (PenumpangEntity) optionalUser.get();
 
-        Optional<Jadwal> optionalJadwal = jadwalRepository.findById(request.getJadwalId());
+        Optional<JadwalEntity> optionalJadwal = jadwalRepository.findById(request.getJadwalId());
         if (optionalJadwal.isEmpty()) {
             throw new ApiException("Jadwal dengan ID " + request.getJadwalId() + " tidak ditemukan.");
         }
-        Jadwal jadwal = optionalJadwal.get();
+        JadwalEntity jadwal = optionalJadwal.get();
 
         PemesananEntity pemesanan = new PemesananEntity();
         pemesanan.setPenumpang(penumpang);

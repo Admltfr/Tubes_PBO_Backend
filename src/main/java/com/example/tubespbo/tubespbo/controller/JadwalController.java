@@ -1,68 +1,61 @@
 package com.example.tubespbo.tubespbo.controller;
 
-import com.example.tubespbo.tubespbo.entity.Jadwal;
-import com.example.tubespbo.tubespbo.entity.KeretaEntity;
-import com.example.tubespbo.tubespbo.repository.JadwalRepository;
-import com.example.tubespbo.tubespbo.repository.KeretaRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.example.tubespbo.tubespbo.model.request.JadwalRequest;
+import com.example.tubespbo.tubespbo.model.response.JadwalResponse;
+import com.example.tubespbo.tubespbo.service.JadwalService;
+import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-// import com.example.tubespbo.tubespbo.model.request.KeretaRequest;
-// import com.example.tubespbo.tubespbo.model.request.JadwalRequest;
-
-import java.util.Date;
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/jadwal")
+@RequiredArgsConstructor
 public class JadwalController {
 
-    @Autowired
-    private JadwalRepository jadwalRepo;
+    private final JadwalService jadwalService;
 
-    @Autowired
-    private KeretaRepository keretaRepo;
-
-    // Lihat semua jadwal
     @GetMapping("/list")
-    public List<Jadwal> getAllJadwal() {
-        return jadwalRepo.findAll();
+    public ResponseEntity<List<JadwalResponse>> getAllJadwal() {
+        List<JadwalResponse> jadwals = jadwalService.getAll();
+        return ResponseEntity.ok(jadwals);
     }
 
-    // Tambah jadwal
     @PostMapping("/add")
-    public Jadwal addJadwal(@RequestParam Long keretaId,
-                            @RequestParam Date tanggal,
-                            @RequestParam Date waktuKeberangkatan,
-                            @RequestBody List<String> rute) {
-
-        Optional<KeretaEntity> keretaOpt = keretaRepo.findById(keretaId);
-        if (keretaOpt.isEmpty()) {
-            throw new RuntimeException("Kereta tidak ditemukan");
+    public ResponseEntity<?> addJadwal(@Valid @RequestBody JadwalRequest req) {
+        try {
+            JadwalResponse saved = jadwalService.add(req);
+            return ResponseEntity.ok(saved);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body("Gagal menambahkan jadwal: " + e.getMessage());
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body("Terjadi kesalahan server.");
         }
-
-        Jadwal jadwal = new Jadwal(tanggal, waktuKeberangkatan, rute.toArray(new String[0]), keretaOpt.get());
-        return jadwalRepo.save(jadwal);
     }
 
-    // Hapus jadwal
     @DeleteMapping("/delete/{id}")
-    public void deleteJadwal(@PathVariable Long id) {
-        jadwalRepo.deleteById(id);
+    public ResponseEntity<?> deleteJadwal(@PathVariable Long id) {
+        try {
+            jadwalService.delete(id);
+            return ResponseEntity.ok("Jadwal berhasil dihapus");
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body("Gagal menghapus jadwal: " + e.getMessage());
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body("Terjadi kesalahan server.");
+        }
     }
 
-    // Update jadwal
     @PutMapping("/update/{id}")
-    public Jadwal updateJadwal(@PathVariable Long id,
-                               @RequestParam Date tanggal,
-                               @RequestParam Date waktuKeberangkatan,
-                               @RequestBody List<String> rute) {
-        return jadwalRepo.findById(id).map(j -> {
-            j.setTanggal(tanggal);
-            j.setWaktuKeberangkatan(waktuKeberangkatan);
-            j.setRute(rute.toArray(new String[0]));
-            return jadwalRepo.save(j);
-        }).orElseThrow();
+    public ResponseEntity<?> updateJadwal(@PathVariable Long id, @Valid @RequestBody JadwalRequest req) {
+        try {
+            JadwalResponse updated = jadwalService.update(id, req);
+            return ResponseEntity.ok(updated);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body("Gagal mengupdate jadwal: " + e.getMessage());
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body("Terjadi kesalahan server.");
+        }
     }
 }
