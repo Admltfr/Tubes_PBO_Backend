@@ -4,19 +4,17 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.example.tubespbo.tubespbo.entity.PemesananEntity;
+import com.example.tubespbo.tubespbo.model.request.PemesananRequest;
 import com.example.tubespbo.tubespbo.model.response.PemesananResponse;
 
 @Component
-public class PemesananResponseMapper {
-
-    private final JadwalResponseMapper jadwalResponseMapper;
-    private final UserMapper userMapper;
+public class PemesananMapper {
 
     @Autowired
-    public PemesananResponseMapper(JadwalResponseMapper jadwalResponseMapper, UserMapper userMapper) {
-        this.jadwalResponseMapper = jadwalResponseMapper;
-        this.userMapper = userMapper;
-    }
+    private JadwalResponseMapper jadwalResponseMapper;
+
+    @Autowired
+    private UserMapper userMapper;
 
     public PemesananResponse toPemesananResponse(PemesananEntity pemesanan) {
         return PemesananResponse.builder()
@@ -24,6 +22,24 @@ public class PemesananResponseMapper {
                 .kelas(pemesanan.getKelas())
                 .jadwal(jadwalResponseMapper.toJadwalResponse(pemesanan.getJadwal()))
                 .penumpang(userMapper.ToPenumpangResponseMapper(pemesanan.getPenumpang()))
+                .build();
+    }
+
+    public PemesananRequest toPemesananRequest(PemesananRequest request) {
+        return PemesananRequest.builder()
+                .harga(request.getHarga())
+                .kelas(request.getKelas())
+                .jadwalId(request.getJadwalId())
+                .penumpangId(request.getPenumpangId())
+                .build();
+    }
+
+    public PemesananEntity toPemesananEntity(PemesananEntity request) {
+        return PemesananEntity.builder()
+                .harga(request.getHarga())
+                .kelas(request.getKelas())
+                .jadwal(request.getJadwal())
+                .penumpang(request.getPenumpang())
                 .build();
     }
 }
