@@ -10,7 +10,7 @@ import com.example.tubespbo.tubespbo.entity.PemesananEntity;
 import com.example.tubespbo.tubespbo.entity.PenumpangEntity;
 import com.example.tubespbo.tubespbo.entity.UserEntity;
 import com.example.tubespbo.tubespbo.exception.ApiException;
-import com.example.tubespbo.tubespbo.mapper.PemesananResponseMapper;
+import com.example.tubespbo.tubespbo.mapper.PemesananMapper;
 import com.example.tubespbo.tubespbo.model.request.PemesananRequest;
 import com.example.tubespbo.tubespbo.model.response.PemesananResponse;
 import com.example.tubespbo.tubespbo.repository.JadwalRepository;
@@ -22,21 +22,17 @@ import jakarta.transaction.Transactional;
 @Service
 public class PemesananService {
 
-    private final PemesananRepository pemesananRepository;
-    private final UserRepository userRepository;
-    private final JadwalRepository jadwalRepository;
-    private final PemesananResponseMapper pemesananResponseMapper;
+    @Autowired
+    private PemesananRepository pemesananRepository;
 
     @Autowired
-    public PemesananService(PemesananRepository pemesananRepository,
-                           UserRepository userRepository,
-                           JadwalRepository jadwalRepository,
-                           PemesananResponseMapper pemesananResponseMapper) {
-        this.pemesananRepository = pemesananRepository;
-        this.userRepository = userRepository;
-        this.jadwalRepository = jadwalRepository;
-        this.pemesananResponseMapper = pemesananResponseMapper;
-    }
+    private UserRepository userRepository;
+
+    @Autowired
+    private JadwalRepository jadwalRepository;
+
+    @Autowired
+    private PemesananMapper pemesananMapper;
 
     @Transactional
     public PemesananResponse createPemesanan(PemesananRequest request) {
@@ -52,6 +48,8 @@ public class PemesananService {
         }
         Jadwal jadwal = optionalJadwal.get();
 
+
+
         PemesananEntity pemesanan = new PemesananEntity();
         pemesanan.setPenumpang(penumpang);
         pemesanan.setJadwal(jadwal);
@@ -61,7 +59,7 @@ public class PemesananService {
 
         PemesananEntity saved = pemesananRepository.save(pemesanan);
 
-        return pemesananResponseMapper.toPemesananResponse(saved);
+        return pemesananMapper.toPemesananResponse(saved);
     }
 
     public PemesananResponse getPemesananById(Long id) {
@@ -69,7 +67,7 @@ public class PemesananService {
         if (optionalPemesanan.isEmpty()) {
             throw new ApiException("Pemesanan dengan ID " + id + " tidak ditemukan.");
         }
-        return pemesananResponseMapper.toPemesananResponse(optionalPemesanan.get());
+        return pemesananMapper.toPemesananResponse(optionalPemesanan.get());
     }
 
     @Transactional
