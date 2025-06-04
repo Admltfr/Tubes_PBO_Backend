@@ -8,7 +8,7 @@ import java.util.stream.Collectors;
 
 public class JadwalResponseMapper {
 
-    public static JadwalResponse toResponse(JadwalEntity entity) {
+    public JadwalResponse toResponse(JadwalEntity entity) {
         if (entity == null) {
             return null;
         }
@@ -22,13 +22,13 @@ public class JadwalResponseMapper {
                 .build();
     }
 
-    public static List<JadwalResponse> toResponseList(List<JadwalEntity> entities) {
+    public List<JadwalResponse> toResponseList(List<JadwalEntity> entities) {
         if (entities == null) {
             return null;
         }
 
         return entities.stream()
-                .map(JadwalResponseMapper::toResponse)
+                .map(this::toResponse)
                 .collect(Collectors.toList());
     }
 }

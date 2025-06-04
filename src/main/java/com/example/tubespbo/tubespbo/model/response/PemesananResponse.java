@@ -8,18 +8,12 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Builderpublic Object id(Object id) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'id'");
-    }
+@Builder
+
 public class PemesananResponse {
     private double harga;
     private String kelas;
     private JadwalResponse jadwal;  
     private PenumpangResponse penumpang;
-    public static Object builder() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'builder'");
-    }
 }
 
