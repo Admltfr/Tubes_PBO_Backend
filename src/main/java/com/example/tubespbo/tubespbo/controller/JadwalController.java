@@ -1,68 +1,88 @@
 package com.example.tubespbo.tubespbo.controller;
 
-import com.example.tubespbo.tubespbo.entity.Jadwal;
-import com.example.tubespbo.tubespbo.entity.KeretaEntity;
-import com.example.tubespbo.tubespbo.repository.JadwalRepository;
-import com.example.tubespbo.tubespbo.repository.KeretaRepository;
+import com.example.tubespbo.tubespbo.exception.ApiException;
+import com.example.tubespbo.tubespbo.mapper.ApiResponseMapper;
+import com.example.tubespbo.tubespbo.model.request.JadwalRequest;
+import com.example.tubespbo.tubespbo.model.response.ApiResponse;
+import com.example.tubespbo.tubespbo.model.response.JadwalResponse;
+import com.example.tubespbo.tubespbo.service.JadwalService;
+import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
-// import com.example.tubespbo.tubespbo.model.request.KeretaRequest;
-// import com.example.tubespbo.tubespbo.model.request.JadwalRequest;
-
-import java.util.Date;
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/jadwal")
+@RequiredArgsConstructor
+
+
 public class JadwalController {
 
-    @Autowired
-    private JadwalRepository jadwalRepo;
+    private final JadwalService jadwalService;
 
     @Autowired
-    private KeretaRepository keretaRepo;
+    private ApiResponseMapper responseBuilder;
 
-    // Lihat semua jadwal
+
     @GetMapping("/list")
-    public List<Jadwal> getAllJadwal() {
-        return jadwalRepo.findAll();
-    }
-
-    // Tambah jadwal
-    @PostMapping("/add")
-    public Jadwal addJadwal(@RequestParam Long keretaId,
-                            @RequestParam Date tanggal,
-                            @RequestParam Date waktuKeberangkatan,
-                            @RequestBody List<String> rute) {
-
-        Optional<KeretaEntity> keretaOpt = keretaRepo.findById(keretaId);
-        if (keretaOpt.isEmpty()) {
-            throw new RuntimeException("Kereta tidak ditemukan");
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<ApiResponse<List<JadwalResponse>>> getAllJadwal() {
+        try {
+            List<JadwalResponse> jadwals = jadwalService.getAll();
+            ApiResponse<List<JadwalResponse>> response = responseBuilder.ToApiResponse(HttpStatus.OK, "Berhasil mengambil data jadwal", jadwals);
+            return ResponseEntity.status(HttpStatus.OK).body(response);
+        } catch (ApiException ex) {
+            throw ex;
+        }catch (Exception ex) {
+            throw new ApiException("Terjadi kesalahan dalam mengambil data jadwal");
         }
-
-        Jadwal jadwal = new Jadwal(tanggal, waktuKeberangkatan, rute.toArray(new String[0]), keretaOpt.get());
-        return jadwalRepo.save(jadwal);
     }
 
-    // Hapus jadwal
+    @PostMapping("/add")
+    @PreAuthorize("hasAuthority('ADMIN')")
+    public ResponseEntity<ApiResponse<JadwalResponse>> addJadwal(@Valid @RequestBody JadwalRequest req) {
+        try {
+            JadwalResponse saved = jadwalService.add(req);
+            ApiResponse<JadwalResponse> response = responseBuilder.ToApiResponse(HttpStatus.OK, "Berhasil membuat data jadwal", saved);
+            return ResponseEntity.ok(response);
+        }catch (ApiException ex) {
+            throw ex;
+        }catch (Exception ex) {
+            throw new ApiException("Terjadi kesalahan dalam menambah jadwal");
+        }
+    }
+
     @DeleteMapping("/delete/{id}")
-    public void deleteJadwal(@PathVariable Long id) {
-        jadwalRepo.deleteById(id);
+    @PreAuthorize("hasAuthority('ADMIN')")
+    public ResponseEntity<ApiResponse<Void>> deleteJadwal(@PathVariable Long id) {
+        try {
+            jadwalService.deleteJadwal(id);
+            ApiResponse<Void> response =  responseBuilder.ToApiResponse(HttpStatus.OK, "Berhasil menghapus jadwal dengan ID: "+ id, null );
+            return ResponseEntity.ok(response);
+        }catch (ApiException ex) {
+            throw ex;
+        }catch (Exception ex) {
+            throw new ApiException("Terjadi kesalahan dalam menghapus jadwal");
+        }
     }
 
-    // Update jadwal
     @PutMapping("/update/{id}")
-    public Jadwal updateJadwal(@PathVariable Long id,
-                               @RequestParam Date tanggal,
-                               @RequestParam Date waktuKeberangkatan,
-                               @RequestBody List<String> rute) {
-        return jadwalRepo.findById(id).map(j -> {
-            j.setTanggal(tanggal);
-            j.setWaktuKeberangkatan(waktuKeberangkatan);
-            j.setRute(rute.toArray(new String[0]));
-            return jadwalRepo.save(j);
-        }).orElseThrow();
+    @PreAuthorize("hasAuthority('ADMIN')")
+    public ResponseEntity<ApiResponse<JadwalResponse>> updateJadwal(@PathVariable Long id, @Valid @RequestBody JadwalRequest req) {
+        try {
+            JadwalResponse updated = jadwalService.update(id, req);
+            ApiResponse<JadwalResponse> response = responseBuilder.ToApiResponse(HttpStatus.OK,  "Jadwal berhasil diupdate", updated);
+            return ResponseEntity.ok(response);
+        }catch (ApiException ex) {
+            throw ex;
+        }catch (Exception ex) {
+            throw new ApiException("Terjadi kesalahan dalam mengupdate jadwal");
+        }
     }
 }

@@ -37,5 +37,20 @@ public class PemesananEntity {
 
     @ManyToOne
     @ToString.Exclude
-    private Jadwal jadwal;
+    private JadwalEntity jadwal;
+    public Object getJumlahTiket() {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'getJumlahTiket'");
+    }
+
+    public Object getWaktuPemesanan() {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'getWaktuPemesanan'");
+    }
+
+    public Object getId() {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'getWaktuPemesanan'");
+    }
+
 }

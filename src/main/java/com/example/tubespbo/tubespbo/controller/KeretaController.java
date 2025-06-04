@@ -92,7 +92,7 @@ public class KeretaController {
             ApiResponse<KeretaResponse> response = responseBuilder.ToApiResponse(HttpStatus.OK, "Berhasil menghapus data kereta", result);
             return ResponseEntity.ok(response);
         } catch (ApiException ex) {
-            throw ex; f
+            throw ex; 
         } catch (Exception ex) {
             throw new ApiException("Terjadi kesalahan saat menghapus data kereta");
         }
