@@ -35,8 +35,8 @@ public class AuthController {
     public ResponseEntity<ApiResponse<RegisterResponse>> register(@RequestBody @Valid RegisterRequest request) {
         try {
             RegisterResponse result = authService.register(request);
-            ApiResponse<RegisterResponse> response = responseBuilder.ToApiResponse(HttpStatus.OK, "Registrasi sukses", result);
-            return ResponseEntity.ok(response);
+            ApiResponse<RegisterResponse> response = responseBuilder.ToApiResponse(HttpStatus.CREATED, "Registrasi sukses", result);
+            return ResponseEntity.status(HttpStatus.CREATED).body(response);
         } catch (ApiException ex) {
             throw ex;
         } catch (Exception ex) {

@@ -1,5 +1,7 @@
 package com.example.tubespbo.tubespbo.mapper;
 
+import java.util.Optional;
+
 import org.springframework.stereotype.Component;
 
 import com.example.tubespbo.tubespbo.entity.KeretaEntity;
@@ -21,4 +23,11 @@ public class KeretaResponseMapper {
             .tujuan(entity.getTujuan())
             .build();
     }
+
+    // public KeretaResponse toKeretaResponse2(Optional<KeretaEntity> kereta) {
+    //     return KeretaResponse.builder()
+    //         .asal(kereta.getAsal())
+    //         .tujuan(kereta.getTujuan())
+    //         .build();
+    // }
 }
