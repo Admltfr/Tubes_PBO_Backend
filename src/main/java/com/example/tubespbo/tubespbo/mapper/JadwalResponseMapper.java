@@ -6,13 +6,15 @@ import com.example.tubespbo.tubespbo.model.response.JadwalResponse;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.springframework.stereotype.Component;
+
+@Component
 public class JadwalResponseMapper {
 
     public JadwalResponse toResponse(JadwalEntity entity) {
         if (entity == null) {
             return null;
         }
-
         return JadwalResponse.builder()
                 .id(entity.getId())
                 .tanggal(entity.getTanggal())

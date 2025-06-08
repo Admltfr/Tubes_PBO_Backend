@@ -10,7 +10,9 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class KeretaRequest {
+public class KeretaUpdateRequest {
+    private Long id;
+    
     @NotBlank(message = "Asal tidak boleh kosong")
     private String asal;
 

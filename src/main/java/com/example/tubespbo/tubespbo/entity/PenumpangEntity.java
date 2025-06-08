@@ -12,4 +12,7 @@ import lombok.experimental.SuperBuilder;
 @SuperBuilder
 public class PenumpangEntity extends UserEntity {
     private String nomorTelepon;
+
+    // @OneToMany
+    // private PemesananEntity riwayat;
 }

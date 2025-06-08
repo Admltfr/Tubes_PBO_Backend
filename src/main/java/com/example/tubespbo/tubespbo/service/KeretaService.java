@@ -1,6 +1,7 @@
 package com.example.tubespbo.tubespbo.service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,6 +11,7 @@ import com.example.tubespbo.tubespbo.entity.KeretaEntity;
 import com.example.tubespbo.tubespbo.exception.ApiException;
 import com.example.tubespbo.tubespbo.mapper.KeretaResponseMapper;
 import com.example.tubespbo.tubespbo.model.request.KeretaRequest;
+import com.example.tubespbo.tubespbo.model.request.KeretaUpdateRequest;
 import com.example.tubespbo.tubespbo.model.response.KeretaResponse;
 import com.example.tubespbo.tubespbo.repository.KeretaRepository;
 
@@ -36,6 +38,14 @@ public class KeretaService {
         return keretaMapper.toKeretaResponse(kereta);
     }
 
+    public KeretaResponse getKeretaById(Long id) {
+        Optional<KeretaEntity> kereta = keretaRepository.findById(id);
+        if (kereta.isEmpty()) {
+            throw new ApiException("kereta dengan ID " + id + " tidak ditemukan.");
+        }
+        return keretaMapper.toKeretaResponse(kereta.get());
+    }
+
     public KeretaResponse getKeretaByTujuan(String tujuan) {
         KeretaEntity kereta = keretaRepository.findByTujuan(tujuan);
         if (kereta == null) return null;
@@ -50,7 +60,7 @@ public class KeretaService {
     }
 
     @Transactional
-    public KeretaResponse updateKereta(KeretaRequest request) {
+    public KeretaResponse updateKereta(KeretaUpdateRequest request) {
         Long keretaId = request.getId();
         KeretaEntity entity = keretaRepository.findById(keretaId)
             .orElseThrow(() -> new ApiException("Data kereta dengan ID " + request.getId() + " tidak ditemukan"));
