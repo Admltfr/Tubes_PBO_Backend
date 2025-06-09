@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import com.example.tubespbo.tubespbo.entity.AdminEntity;
 import com.example.tubespbo.tubespbo.entity.PenumpangEntity;
 import com.example.tubespbo.tubespbo.entity.UserEntity;
+import com.example.tubespbo.tubespbo.exception.ApiException;
 import com.example.tubespbo.tubespbo.mapper.AuthMapper;
 import com.example.tubespbo.tubespbo.model.request.LoginRequest;
 import com.example.tubespbo.tubespbo.model.request.RegisterRequest;
@@ -31,12 +32,23 @@ public class AuthService {
 
     public RegisterResponse register(RegisterRequest request) {
         //ini maksudnya, penumpang atau admin itu bakal diubah dari registerreq ke entity
-        if ("PENUMPANG".equalsIgnoreCase(request.getRole())) {
-            PenumpangEntity user = registrasiMapper.ToPenumpangEntity(request);
-            userRepository.save(user);
-        } else if ("ADMIN".equalsIgnoreCase(request.getRole())) {
-            AdminEntity user = registrasiMapper.ToAdminEntity(request);
-            userRepository.save(user);
+        // ADMIN hanya bisa didaftarkan manual, sedangkan selain itu bakal auto assign jadi penumpang
+        // Sebelumnya dicek dulu apakah emailnya ada sama dengan user lain atau tidak
+        UserEntity existingUserEmail = userRepository.findByEmail(request.getEmail());
+        UserEntity existingUserName = userRepository.findByUsername(request.getUsername());
+        if (existingUserEmail != null) {
+            throw new ApiException("Email sudah digunakan");
+        } else if (existingUserName != null) {
+            throw new ApiException("Username sudah digunakan");
+        } else {
+            if ("ADMIN".equalsIgnoreCase(request.getRole())) {
+                AdminEntity user = registrasiMapper.ToAdminEntity(request);
+                userRepository.save(user);
+            } else {
+                request.setRole("PENUMPANG");
+                PenumpangEntity user = registrasiMapper.ToPenumpangEntity(request);
+                userRepository.save(user);
+            }
         }
         return registrasiMapper.ToRegisterResponse(request);
     }

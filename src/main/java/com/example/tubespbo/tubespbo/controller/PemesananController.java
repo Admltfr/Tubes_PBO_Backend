@@ -38,7 +38,7 @@ public class PemesananController {
     private ApiResponseMapper responseBuilder;
 
     @GetMapping
-    @PreAuthorize("IsAuthenticated()")
+    @PreAuthorize("isAuthenticated()")
     public ResponseEntity<ApiResponse<List<PemesananResponse>>> getAllPemesanan() {
         try {
             List<PemesananResponse> schedules = pemesananService.getAllPemesanan();

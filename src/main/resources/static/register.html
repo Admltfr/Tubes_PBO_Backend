@@ -1,120 +1,160 @@
 <!DOCTYPE html>
 <html lang="id">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Register - Train-U</title>
     <style>
-        /* ...existing style code... */
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-        }
-        header {
-            text-align: center;
-            padding: 30px;
-            background-color: #003366;
-        }
-        header h1 {
-            font-size: 50px;
-            color: white;
-        }
-        form {
-            background-color: #f2f3f4;
-            padding: 40px;
-            margin: 100px auto;
-            width: 300px;
-            border-radius: 8px;
-        }
-        label {
-            display: block;
-            margin-bottom: 10px;
-            font-size: 16px;
-            color: #333;
-        }
-        input {
-            width: 100%;
-            padding: 12px;
-            margin-bottom: 20px;
-            font-size: 16px;
-            border-radius: 5px;
-            border: 1px solid #ccc;
-        }
-        button {
-            width: 100%;
-            padding: 12px;
-            background-color: #ff6600;
-            color: white;
-            font-size: 18px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-        }
-        footer {
-            text-align: center;
-            margin-top: 20px;
-        }
-        footer a {
-            color: #ff6600;
-            text-decoration: none;
-        }
-        footer a:hover {
-            text-decoration: underline;
-        }
+      body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+      }
+      header {
+        text-align: center;
+        padding: 30px;
+        background-color: #003366;
+      }
+      header h1 {
+        font-size: 50px;
+        color: white;
+      }
+      form {
+        background-color: #f2f3f4;
+        padding: 40px;
+        margin: 100px auto;
+        width: 300px;
+        border-radius: 8px;
+      }
+      label {
+        display: block;
+        margin-bottom: 10px;
+        font-size: 16px;
+        color: #333;
+      }
+      input {
+        width: 100%;
+        padding: 12px;
+        margin-bottom: 20px;
+        font-size: 16px;
+        border-radius: 5px;
+        border: 1px solid #ccc;
+      }
+      button {
+        width: 100%;
+        padding: 12px;
+        background-color: #ff6600;
+        color: white;
+        font-size: 18px;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+      }
+      footer {
+        text-align: center;
+        margin-top: 20px;
+      }
+      footer a {
+        color: #ff6600;
+        text-decoration: none;
+      }
+      footer a:hover {
+        text-decoration: underline;
+      }
     </style>
-</head>
-<body>
-    <!-- Bagian header yang menampilkan logo dan judul halaman -->
+  </head>
+  <body>
     <header>
-        <img src="logo_train_u_w.png" alt="Train-U Logo" style="width: 150px;">
+      <img
+        src="assets/logo_trainu.png"
+        alt="Train-U Logo"
+        style="width: 150px"
+      />
     </header>
 
-    <!-- Formulir untuk registrasi pengguna baru -->
     <form id="registerForm">
-        <h2 style="text-align: center; color: #ff6600;">Register</h2>
-        <label for="username">User name</label>
-        <input type="text" id="username" name="username" placeholder="Ex: yourusername" required>
-        <label for="password">Password</label>
-        <input type="password" id="password" name="password" placeholder="********" required>
-        <label for="email">Email</label>
-        <input type="email" id="email" name="email" placeholder="Ex: trainu@gmail.com" required>
-        <label for="phone">Handphone Number</label>
-        <input type="text" id="phone" name="phone" placeholder="Ex: 00000000000" required>
-        <button type="submit">REGISTER</button>
-        <div id="registerMsg" style="display:none; text-align:center; margin-top:10px;"></div>
-        <footer>
-            <p>Already User? <a href="index.html">LOGIN</a></p>
-        </footer>
+      <h2 style="text-align: center; color: #ff6600">Register</h2>
+      <label for="username">User name</label>
+      <input
+        type="text"
+        id="username"
+        name="username"
+        placeholder="Ex: yourusername"
+        required
+      />
+      <label for="password">Password</label>
+      <input
+        type="password"
+        id="password"
+        name="password"
+        placeholder="********"
+        required
+      />
+      <label for="email">Email</label>
+      <input
+        type="email"
+        id="email"
+        name="email"
+        placeholder="Ex: trainu@gmail.com"
+        required
+      />
+      <label for="phone">Handphone Number</label>
+      <input
+        type="text"
+        id="nomorTelepon"
+        name="nomorTelepon"
+        placeholder="Ex: 00000000000"
+        required
+      />
+      <button type="submit">REGISTER</button>
+      <div
+        id="registerMsg"
+        style="display: none; text-align: center; margin-top: 10px"
+      ></div>
+      <footer>
+        <p>Already User? <a href="index.html">LOGIN</a></p>
+      </footer>
     </form>
     <script>
-    document.getElementById('registerForm').addEventListener('submit', async function(e) {
-        e.preventDefault();
-        const username = document.getElementById('username').value;
-        const password = document.getElementById('password').value;
-        const email = document.getElementById('email').value;
-        const phone = document.getElementById('phone').value;
-        const msgDiv = document.getElementById('registerMsg');
-        msgDiv.style.display = 'none';
+      document
+        .getElementById("registerForm")
+        .addEventListener("submit", async function (e) {
+          e.preventDefault();
+          const username = document.getElementById("username").value;
+          const password = document.getElementById("password").value;
+          const email = document.getElementById("email").value;
+          const nomorTelepon = document.getElementById("nomorTelepon").value;
+          const msgDiv = document.getElementById("registerMsg");
+          // Role otomatis penumpang, admin hanya bisa daftar manual di backend
+          const role = "PENUMPANG";
+          msgDiv.style.display = "none";
 
-        const response = await fetch('/api/auth/register', {
-            method: 'POST',
-            headers: {'Content-Type': 'application/json'},
-            body: JSON.stringify({ username, password, email, phone })
-        });
+          const response = await fetch("/api/auth/register", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              username,
+              password,
+              email,
+              nomorTelepon,
+              role,
+            }),
+          });
 
-        if (response.ok) {
-            msgDiv.style.display = 'block';
-            msgDiv.style.color = 'green';
-            msgDiv.textContent = 'Registrasi berhasil! Silakan login.';
-            setTimeout(() => window.location.href = 'index.html', 1500);
-        } else {
-            msgDiv.style.display = 'block';
-            msgDiv.style.color = 'red';
+          if (response.ok) {
+            msgDiv.style.display = "block";
+            msgDiv.style.color = "green";
+            msgDiv.textContent = "Registrasi berhasil! Silakan login.";
+            setTimeout(() => (window.location.href = "index.html"), 1500);
+          } else {
+            msgDiv.style.display = "block";
+            msgDiv.style.color = "red";
             const data = await response.json().catch(() => ({}));
-            msgDiv.textContent = data.message || 'Registrasi gagal. Username/email sudah digunakan atau data tidak valid.';
-        }
-    });
+            msgDiv.innerHTML =
+              data.message ||
+              "Registrasi gagal. Username/email sudah digunakan atau data tidak valid.";
+          }
+        });
     </script>
-</body>
+  </body>
 </html>
