@@ -62,7 +62,11 @@
   </head>
   <body>
     <header>
-      <img src="logo_trainu.png" alt="Train-U Logo" style="width: 150px" />
+      <img
+        src="assets/logo_trainu.png"
+        alt="Train-U Logo"
+        style="width: 150px"
+      />
     </header>
 
     <form id="loginForm">
@@ -73,13 +77,10 @@
       <input type="password" id="password" name="password" required />
       <button type="submit">LOGIN</button>
 
-      <!-- Pesan error akan muncul di sini -->
       <div
         id="errorMsg"
         style="display: none; color: red; text-align: center; margin-top: 10px"
-      >
-        <!-- Pesan dari backend akan diisi di sini -->
-      </div>
+      ></div>
 
       <footer>
         <p>New User? <a href="register.html">Register</a></p>
@@ -103,21 +104,23 @@
             });
 
             if (response.ok) {
-              // Login sukses, redirect ke home
-              window.location.href = "home.html";
+              const data = await response.json();
+              // Buat simpan statuas login
+              localStorage.setItem("token", data.data);
+              // Ke halaman dummy untuk ngetes
+              window.location.href = "dummy.html";
             } else {
-              // Ambil dan tampilkan pesan error dari backend
               const errorData = await response.json();
               const errorMessage = errorData.message || "Terjadi kesalahan.";
               errorMsgDiv.textContent = errorMessage;
               errorMsgDiv.style.display = "block";
             }
           } catch (error) {
-            // Error di sisi jaringan atau server
             errorMsgDiv.textContent = "Tidak dapat terhubung ke server.";
             errorMsgDiv.style.display = "block";
           }
         });
     </script>
-  </body>
+     
+  </body>
 </html>
