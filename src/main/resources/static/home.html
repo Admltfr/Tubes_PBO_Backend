@@ -1,53 +1,170 @@
 <!DOCTYPE html>
 <html lang="id">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Login - Train-U</title>
-    <style>
-      body {
-        font-family: Arial, sans-serif;
-        margin: 0;
-        padding: 0;
-      }
-      header {
-        text-align: center;
-        padding: 30px;
-        background-color: #003366;
-      }
-    </style>
-  </head>
-  <body>
-    <header>
-      <img
-        src="assets/logo_trainu.png"
-        alt="Train-U Logo"
-        style="width: 150px"
-      />
-    </header>
-    <script>
-      // Fungsi buat ngetes akses api pake token
-    </script>
-    <script>
-      // Redirect ke login klo misal tokennya gada
-      const token = localStorage.getItem("token");
-      if (!token) {
-        window.location.href = "index.html";
-      } else {
-        // Contoh: Ambil data kereta dari backend
-        fetch("/api/trains", {
-          headers: {
-            Authorization: "Bearer " + token,
-          },
-        })
-          .then((response) => response.json())
-          .then((data) => {
-            console.log(data);
-          })
-          .catch((error) => {
-            console.error("Gagal mengambil data:", error);
-          });
-      }
-    </script>
-  </body>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Home - Train-U</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background-color: #f5f5f5;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+    header {
+      background-color: #003366;
+      text-align: center;
+      padding: 20px;
+    }
+    header img {
+      width: 160px;
+    }
+    h2 {
+      text-align: center;
+      color: #d87c2a;
+      margin: 20px 0;
+    }
+    .schedule-list {
+      padding: 20px;
+      flex: 1;
+    }
+    .schedule-card {
+      background-color: white;
+      border: 4px solid #1a4b8a;
+      border-radius: 12px;
+      padding: 15px 20px;
+      margin-bottom: 20px;
+    }
+    .schedule-title {
+      font-size: 18px;
+      font-weight: bold;
+      color: black;
+      margin-bottom: 10px;
+      text-align: center;
+    }
+    .schedule-info {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+    .time-info {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .time-block {
+      text-align: center;
+    }
+    .time-block div:first-child {
+      font-size: 18px;
+      font-weight: bold;
+    }
+    .arrow {
+      font-size: 20px;
+    }
+    .class-info {
+      font-size: 15px;
+      color: #d87c2a;
+      font-weight: bold;
+      margin-left: 10px;
+    }
+    .order-btn {
+      margin-top: 5px;
+      padding: 5px 15px;
+      background-color: #d87c2a;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 14px;
+    }
+    footer {
+      background-color: #003366;
+      display: flex;
+      justify-content: space-around;
+      padding: 10px 0;
+    }
+    footer a {
+      color: white;
+      text-decoration: none;
+      font-weight: bold;
+      font-size: 16px;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <img src="assets/logo_trainu.png" alt="Train-U Logo" />
+  </header>
+
+  <h2>Jadwal Kereta Hari Ini</h2>
+
+  <div class="schedule-list" id="scheduleList">
+    <!-- Jadwal kereta akan dimuat di sini -->
+  </div>
+
+  <footer>
+    <a href="history.html">History</a>
+    <a href="home.html">Home</a>
+    <a href="profile.html">Profile</a>
+  </footer>
+
+  <script>
+    // Ambil token dari localStorage (jika pakai auth)
+    const token = localStorage.getItem("token");
+
+    // Fetch jadwal dari backend
+    fetch("/api/schedules", {
+      headers: token ? { Authorization: "Bearer " + token } : {}
+    })
+      .then(response => response.json())
+      .then(data => {
+        const scheduleList = document.getElementById("scheduleList");
+        if (!data.data || data.data.length === 0) {
+          scheduleList.innerHTML = "<p>Tidak ada jadwal tersedia.</p>";
+          return;
+        }
+        data.data.forEach(jadwal => {
+          // Sesuaikan field dengan JadwalResponse backend
+          const rute = jadwal.rute || "-";
+          const waktu = jadwal.waktuKeberangkatan ? jadwal.waktuKeberangkatan.substring(11,16) : "-";
+          const tanggal = jadwal.tanggal ? jadwal.tanggal.substring(0,10) : "-";
+          const asal = rute.split("-")[0]?.trim() || "-";
+          const tujuan = rute.split("-")[1]?.trim() || "-";
+          const namaKereta = jadwal.keretaNama || "Kereta";
+
+          const card = document.createElement("div");
+          card.className = "schedule-card";
+          card.innerHTML = `
+            <div class="schedule-title">${namaKereta} (${rute})</div>
+            <div class="schedule-info">
+              <div class="time-info">
+                <div class="time-block">
+                  <div>${waktu}</div>
+                  <div>${asal}</div>
+                </div>
+                <div class="arrow">→</div>
+                <div class="time-block">
+                  <div>${waktu}</div>
+                  <div>${tujuan}</div>
+                </div>
+              </div>
+              <div class="class-info">
+                <span>Tanggal: ${tanggal}</span>
+              </div>
+              <button class="order-btn" onclick="window.location.href='order.html?jadwalId=${jadwal.id}'">Pesan</button>
+            </div>
+          `;
+          scheduleList.appendChild(card);
+        });
+      })
+      .catch(error => {
+        document.getElementById("scheduleList").innerHTML = "<p>Gagal memuat jadwal.</p>";
+      });
+  </script>
+</body>
 </html>
