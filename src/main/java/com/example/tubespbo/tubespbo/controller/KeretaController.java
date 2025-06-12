@@ -37,7 +37,7 @@ public class KeretaController {
     private ApiResponseMapper responseBuilder;
 
     @GetMapping
-    @PreAuthorize("IsAuthenticated()")
+    @PreAuthorize("isAuthenticated()")
     public ResponseEntity<ApiResponse<List<KeretaResponse>>> getAllKereta() {
         try {
             List<KeretaResponse> trains = keretaService.getAllKereta();

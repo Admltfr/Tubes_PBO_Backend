@@ -40,7 +40,8 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ApiResponse<Object>> handleValidationException(MethodArgumentNotValidException ex) {
         StringBuilder errorMsg = new StringBuilder();
         ex.getBindingResult().getFieldErrors().forEach(error ->
-            errorMsg.append(error.getDefaultMessage())
+        //br untuk memberi jarak antar pesan errornya di html
+            errorMsg.append(error.getDefaultMessage()).append("<br>")
             // errorMsg.append(error.getField()).append(": ").append(error.getDefaultMessage())
         );
         ApiResponse<Object> response = responseBuilder.ToApiResponse(HttpStatus.BAD_REQUEST,errorMsg.toString(),null);

@@ -21,7 +21,14 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http.csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(requests -> requests
-                        .requestMatchers("/api/auth/login", "/api/auth/register").permitAll()
+                        .requestMatchers(
+                            "/api/auth/login", "/api/auth/register",
+                            // Allow semua frontend, keknya keamanan bagusnya di backend aja
+                            // Untuk semua file html yang ada
+                            "/*.html", 
+                            // Untuk icon atau gambar
+                            "/assets/**"
+                        ).permitAll()
                         .anyRequest().authenticated())
                         // .anyRequest().permitAll())
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
