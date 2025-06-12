@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Schedule List - Train-U</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background-color: white;
+    }
+
+    .header {
+      background-color: #003366;
+      padding: 20px;
+      text-align: center;
+    }
+
+    .header img {
+      height: 50px;
+    }
+
+    .container {
+      padding: 30px;
+      text-align: center;
+    }
+
+    h2 {
+      color: #e28a00;
+      margin-bottom: 20px;
+    }
+
+    .add-button {
+      background-color: #00cc00;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      margin-bottom: 20px;
+      font-weight: bold;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: auto;
+    }
+
+    th, td {
+      border: 1px solid black;
+      padding: 12px;
+      text-align: center;
+    }
+
+    th {
+      background-color: #f2f2f2;
+    }
+
+    .btn-edit {
+      background-color: #ffa500;
+      color: white;
+      border: none;
+      padding: 6px 14px;
+      border-radius: 5px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    .btn-delete {
+      background-color: red;
+      color: white;
+      border: none;
+      padding: 6px 14px;
+      border-radius: 5px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="header">
+    <img src="logo.png" alt="Train-U Logo">
+  </div>
+
+  <div class="container">
+    <h2>Setting Schedule Admin</h2>
+    <button class="add-button" onclick="window.location.href='aaddschedule.html'">ADD SCHEDULE</button>
+
+    <table>
+      <thead>
+        <tr>
+          <th>Kereta Id</th>
+          <th>Tanggal</th>
+          <th>Waktu Keberangkatan</th>
+          <th>Rute</th>
+          <th>Edit</th>
+          <th>Delete</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>1</td>
+          <td>2024-05-20T00:00:00Z</td>
+          <td>2024-05-20T08:30:00Z</td>
+          <td>"Bandung", "Jambi", "Jakarta"</td>
+          <td><button class="btn-edit">EDIT</button></td>
+          <td><button class="btn-delete">DELETE</button></td>
+        </tr>
+        <tr>
+          <td>2</td>
+          <td>2025-02-14T00:00:00Z</td>
+          <td>2025-02-14T10:30:00Z</td>
+          <td>"Bandung", "Papua"</td>
+          <td><button class="btn-edit">EDIT</button></td>
+          <td><button class="btn-delete">DELETE</button></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+</body>
+</html>
