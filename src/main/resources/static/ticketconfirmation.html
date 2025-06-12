@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Ticket Confirmation</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0; padding: 0;
+      background-color: #f5f5f5;
+    }
+    .header {
+      background-color: #003366;
+      padding: 20px;
+      text-align: center;
+    }
+    .header img {
+      height: 60px;
+    }
+    h2 {
+      text-align: center;
+      color: #ff6600;
+      margin-top: 30px;
+    }
+    .card {
+      border: 8px solid #004aad;
+      border-radius: 15px;
+      width: 400px;
+      margin: 30px auto;
+      padding: 30px;
+      background-color: white;
+      text-align: center;
+    }
+    .card h3 {
+      color: #ff6600;
+      margin: 10px 0 5px;
+    }
+    .route {
+      display: flex;
+      justify-content: space-between;
+      margin: 20px 0;
+      font-size: 18px;
+    }
+    .route-time {
+      font-weight: bold;
+      font-size: 22px;
+    }
+    .price {
+      color: blue;
+      font-weight: bold;
+      margin-top: 5px;
+    }
+    .btn-row {
+      margin-top: 25px;
+      display: flex;
+      justify-content: space-between;
+    }
+    .cancel-btn {
+      background-color: red;
+      color: white;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+    .book-btn {
+      background-color: #ff6600;
+      color: white;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="header">
+    <img src="assets/logo_trainu.png" alt="Train-U Logo" style="width: 80px" >
+  </div>
+
+  <h2>Ticket Confirmation</h2>
+
+  <div class="card">
+    <h3>Passenger Name</h3>
+    <p id="passengerName">...</p>
+
+    <h3>Train ID</h3>
+    <p id="trainId">...</p>
+
+    <h3>Route</h3>
+    <div class="route">
+      <div>
+        <div class="route-time" id="departureTime">...</div>
+        <div id="departureCity">...</div>
+      </div>
+      <div>
+        <div class="route-time" id="arrivalTime">...</div>
+        <div id="arrivalCity">...</div>
+      </div>
+    </div>
+
+    <h3>Class</h3>
+    <div id="className">...</div>
+    <div class="price" id="price">...</div>
+
+    <div class="btn-row">
+      <button class="cancel-btn" onclick="window.location.href='booking.html'">Cancel</button>
+      <button class="book-btn" id="bookBtn">Book</button>
+    </div>
+    <div id="msg" style="margin-top:15px;color:red;display:none"></div>
+  </div>
+
+  <script>
+    // Ambil token dan jadwalId dari localStorage dan URL
+    const token = localStorage.getItem("token");
+    const urlParams = new URLSearchParams(window.location.search);
+    const jadwalId = urlParams.get("jadwalId");
+
+    // Cek login
+    if (!token) {
+      window.location.href = "index.html";
+    }
+
+    // Fetch detail jadwal
+    let jadwalData = {};
+    fetch(/api/schedules/${jadwalId}, {
+      headers: token ? { Authorization: "Bearer " + token } : {}
+    })
+      .then(res => res.json())
+      .then(data => {
+        if (!data.data) throw new Error("Jadwal tidak ditemukan");
+        jadwalData = data.data;
+        document.getElementById("trainId").textContent = jadwalData.keretaId || "-";
+        // Format waktu
+        const waktuBerangkat = jadwalData.waktuKeberangkatan ? jadwalData.waktuKeberangkatan.substring(11,16) : "-";
+        const waktuTiba = jadwalData.tanggal ? jadwalData.tanggal.substring(11,16) : "-";
+        document.getElementById("departureTime").textContent = waktuBerangkat;
+        document.getElementById("arrivalTime").textContent = waktuTiba;
+        // Rute
+        const rute = Array.isArray(jadwalData.rute) ? jadwalData.rute : (jadwalData.rute || "-").split("-");
+        document.getElementById("departureCity").textContent = rute[0]?.trim() || "-";
+        document.getElementById("arrivalCity").textContent = rute[1]?.trim() || "-";
+        // Dummy class & price (ganti sesuai kebutuhan)
+        document.getElementById("className").textContent = "Economy";
+        document.getElementById("price").textContent = "IDR 100000";
+      })
+      .catch(() => {
+        document.getElementById("msg").style.display = "block";
+        document.getElementById("msg").textContent = "Gagal memuat data jadwal.";
+      });
+
+    // Fetch nama penumpang (user login)
+    fetch("/api/users/me", {
+      headers: token ? { Authorization: "Bearer " + token } : {}
+    })
+      .then(res => res.json())
+      .then(data => {
+        document.getElementById("passengerName").textContent = data.data?.username || "-";
+      })
+      .catch(() => {
+        document.getElementById("passengerName").textContent = "-";
+      });
+
+    // Handle tombol Book
+    document.getElementById("bookBtn").onclick = async function() {
+      const msgDiv = document.getElementById("msg");
+      msgDiv.style.display = "none";
+      // Ambil data dari tampilan
+      const kelas = document.getElementById("className").textContent;
+      const harga = Number(document.getElementById("price").textContent.replace(/[^\d]/g, ""));
+      try {
+        const response = await fetch("/api/pemesanan/add", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            ...(token ? { Authorization: "Bearer " + token } : {})
+          },
+          body: JSON.stringify({
+            jadwalId: Number(jadwalId),
+            kelas: kelas,
+            harga: harga
+          })
+        });
+        if (response.ok) {
+          window.location.href = "receipt.html";
+        } else {
+          const data = await response.json().catch(() => ({}));
+          msgDiv.style.display = "block";
+          msgDiv.textContent = data.message || "Gagal melakukan pemesanan.";
+        }
+      } catch (err) {
+        msgDiv.style.display = "block";
+        msgDiv.textContent = "Gagal terhubung ke server.";
+      }
+    };
+  </script>
+</body>
+</html>

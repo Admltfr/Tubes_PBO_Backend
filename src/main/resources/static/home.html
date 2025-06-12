@@ -24,7 +24,40 @@
     h2 {
       text-align: center;
       color: #d87c2a;
-      margin: 20px 0;
+      margin: 20px 0 10px 0;
+    }
+    .filter-bar {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background: #fff;
+      border-radius: 8px;
+      padding: 12px 16px;
+      margin: 0 20px 20px 20px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+    }
+    .filter-input {
+      padding: 8px 12px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      font-size: 15px;
+      width: 120px;
+    }
+    #dateInput {
+      width: 160px;
+    }
+    .filter-btn, .sort-btn {
+      background: #d87c2a;
+      color: #fff;
+      border: none;
+      border-radius: 6px;
+      padding: 8px 16px;
+      font-size: 15px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+    .sort-btn {
+      background: #ff9800;
     }
     .schedule-list {
       padding: 20px;
@@ -94,6 +127,35 @@
       font-weight: bold;
       font-size: 16px;
     }
+    /* Modal styles */
+    #ticketModal {
+      display: none;
+      position: fixed;
+      top: 0; left: 0; width: 100vw; height: 100vh;
+      background: rgba(0,0,0,0.5);
+      z-index: 999;
+      justify-content: center;
+      align-items: center;
+    }
+    #ticketContent {
+      background: #fff;
+      padding: 30px 20px;
+      border-radius: 10px;
+      max-width: 600px;
+      max-height: 90vh;
+      overflow: auto;
+      position: relative;
+    }
+    #closeTicket {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      font-size: 18px;
+      background: none;
+      border: none;
+      cursor: pointer;
+      color: #003366;
+    }
   </style>
 </head>
 <body>
@@ -103,8 +165,25 @@
 
   <h2>Jadwal Kereta Hari Ini</h2>
 
+  <!-- Filter Bar -->
+  <div class="filter-bar">
+    <input type="text" id="fromInput" class="filter-input" placeholder="From" />
+    <input type="text" id="toInput" class="filter-input" placeholder="To" />
+    <input type="date" id="dateInput" class="filter-input" />
+    <button id="filterBtn" class="filter-btn">🔍</button>
+    <button id="sortBtn" class="sort-btn">⇅ Sort & Filter</button>
+  </div>
+
   <div class="schedule-list" id="scheduleList">
     <!-- Jadwal kereta akan dimuat di sini -->
+  </div>
+
+  <!-- Modal untuk ticket confirmation -->
+  <div id="ticketModal">
+    <div id="ticketContent">
+      <button id="closeTicket">&times;</button>
+      <!-- Konten ticketconfirmation.html akan dimuat di sini -->
+    </div>
   </div>
 
   <footer>
@@ -116,6 +195,7 @@
   <script>
     // Ambil token dari localStorage (jika pakai auth)
     const token = localStorage.getItem("token");
+    let allSchedules = [];
 
     // Fetch jadwal dari backend
     fetch("/api/schedules", {
@@ -123,48 +203,123 @@
     })
       .then(response => response.json())
       .then(data => {
-        const scheduleList = document.getElementById("scheduleList");
         if (!data.data || data.data.length === 0) {
-          scheduleList.innerHTML = "<p>Tidak ada jadwal tersedia.</p>";
+          document.getElementById("scheduleList").innerHTML = "<p>Tidak ada jadwal tersedia.</p>";
           return;
         }
-        data.data.forEach(jadwal => {
-          // Sesuaikan field dengan JadwalResponse backend
-          const rute = jadwal.rute || "-";
-          const waktu = jadwal.waktuKeberangkatan ? jadwal.waktuKeberangkatan.substring(11,16) : "-";
-          const tanggal = jadwal.tanggal ? jadwal.tanggal.substring(0,10) : "-";
-          const asal = rute.split("-")[0]?.trim() || "-";
-          const tujuan = rute.split("-")[1]?.trim() || "-";
-          const namaKereta = jadwal.keretaNama || "Kereta";
-
-          const card = document.createElement("div");
-          card.className = "schedule-card";
-          card.innerHTML = `
-            <div class="schedule-title">${namaKereta} (${rute})</div>
-            <div class="schedule-info">
-              <div class="time-info">
-                <div class="time-block">
-                  <div>${waktu}</div>
-                  <div>${asal}</div>
-                </div>
-                <div class="arrow">→</div>
-                <div class="time-block">
-                  <div>${waktu}</div>
-                  <div>${tujuan}</div>
-                </div>
-              </div>
-              <div class="class-info">
-                <span>Tanggal: ${tanggal}</span>
-              </div>
-              <button class="order-btn" onclick="window.location.href='order.html?jadwalId=${jadwal.id}'">Pesan</button>
-            </div>
-          `;
-          scheduleList.appendChild(card);
-        });
+        allSchedules = data.data;
+        renderSchedules(allSchedules);
       })
       .catch(error => {
         document.getElementById("scheduleList").innerHTML = "<p>Gagal memuat jadwal.</p>";
       });
+
+    function renderSchedules(schedules) {
+      const scheduleList = document.getElementById("scheduleList");
+      scheduleList.innerHTML = "";
+      schedules.forEach(jadwal => {
+        // rute bisa array atau string, handle keduanya
+        let rute = "-";
+        let asal = "-";
+        let tujuan = "-";
+        if (Array.isArray(jadwal.rute)) {
+          rute = jadwal.rute.join(" - ");
+          asal = jadwal.rute[0] || "-";
+          tujuan = jadwal.rute[jadwal.rute.length-1] || "-";
+        } else if (typeof jadwal.rute === "string") {
+          rute = jadwal.rute;
+          asal = rute.split("-")[0]?.trim() || "-";
+          tujuan = rute.split("-")[1]?.trim() || "-";
+        }
+        const waktu = jadwal.waktuKeberangkatan ? jadwal.waktuKeberangkatan.substring(11,16) : "-";
+        const tanggal = jadwal.tanggal ? jadwal.tanggal.substring(0,10) : "-";
+        const namaKereta = jadwal.keretaNama || "Kereta";
+
+        const card = document.createElement("div");
+        card.className = "schedule-card";
+        card.innerHTML = `
+          <div class="schedule-title">${namaKereta} (${rute})</div>
+          <div class="schedule-info">
+            <div class="time-info">
+              <div class="time-block">
+                <div>${waktu}</div>
+                <div>${asal}</div>
+              </div>
+              <div class="arrow">→</div>
+              <div class="time-block">
+                <div>${waktu}</div>
+                <div>${tujuan}</div>
+              </div>
+            </div>
+            <div class="class-info">
+              <span>Tanggal: ${tanggal}</span>
+            </div>
+            <button class="order-btn" data-jadwal-id="${jadwal.id}">Pesan</button>
+          </div>
+        `;
+        scheduleList.appendChild(card);
+      });
+    }
+
+    // Filter logic
+    document.getElementById('filterBtn').onclick = function() {
+      const from = document.getElementById('fromInput').value.toLowerCase();
+      const to = document.getElementById('toInput').value.toLowerCase();
+      const date = document.getElementById('dateInput').value;
+      const filtered = allSchedules.filter(jadwal => {
+        let asal = "-";
+        let tujuan = "-";
+        if (Array.isArray(jadwal.rute)) {
+          asal = jadwal.rute[0] || "-";
+          tujuan = jadwal.rute[jadwal.rute.length-1] || "-";
+        } else if (typeof jadwal.rute === "string") {
+          asal = jadwal.rute.split("-")[0]?.trim() || "-";
+          tujuan = jadwal.rute.split("-")[1]?.trim() || "-";
+        }
+        const tanggal = jadwal.tanggal ? jadwal.tanggal.substring(0,10) : "-";
+        let show = true;
+        if (from && !asal.toLowerCase().includes(from)) show = false;
+        if (to && !tujuan.toLowerCase().includes(to)) show = false;
+        if (date && tanggal !== date) show = false;
+        return show;
+      });
+      renderSchedules(filtered);
+    };
+
+    // Sort & Filter button (contoh: sort by waktu keberangkatan)
+    document.getElementById('sortBtn').onclick = function() {
+      const sorted = [...allSchedules].sort((a, b) => {
+        if (!a.waktuKeberangkatan || !b.waktuKeberangkatan) return 0;
+        return a.waktuKeberangkatan.localeCompare(b.waktuKeberangkatan);
+      });
+      renderSchedules(sorted);
+    };
+
+    // Event delegation untuk tombol Pesan
+    document.getElementById("scheduleList").addEventListener("click", function(e) {
+      if (e.target.classList.contains("order-btn")) {
+        e.preventDefault();
+        const jadwalId = e.target.getAttribute("data-jadwal-id");
+        // Fetch ticketconfirmation.html
+        fetch("ticketconfirmation.html")
+          .then(res => res.text())
+          .then(html => {
+            document.getElementById("ticketContent").innerHTML = `
+              <button id="closeTicket">&times;</button>
+              ${html}
+            `;
+            document.getElementById("ticketModal").style.display = "flex";
+            // (Opsional) Isi data jadwal ke ticketconfirmation jika perlu, misal dengan JS
+          });
+      }
+    });
+
+    // Tutup modal
+    document.body.addEventListener("click", function(e) {
+      if (e.target.id === "closeTicket" || e.target.id === "ticketModal") {
+        document.getElementById("ticketModal").style.display = "none";
+      }
+    });
   </script>
 </body>
 </html>

@@ -78,25 +78,69 @@
     <img src="logo.png" alt="Train-U Logo">
   </div>
 
-  <div class="container">
-    <div class="card">
-      <h2>Add Schedule</h2>
-
+<div class="container">
+  <div class="card">
+    <h2>Add Schedule</h2>
+    <form id="scheduleForm">
       <label>Kereta Id</label>
-      <input type="text" placeholder="...">
+      <input type="text" id="keretaId" required placeholder="...">
 
       <label>Tanggal</label>
-      <input type="datetime-local" placeholder="yyyy-MM-ddTHH:mm:ss">
+      <input type="datetime-local" id="tanggal" required placeholder="yyyy-MM-ddTHH:mm:ss">
 
       <label>Waktu Keberangkatan</label>
-      <input type="datetime-local" placeholder="yyyy-MM-ddTHH:mm:ss">
+      <input type="datetime-local" id="waktuKeberangkatan" required placeholder="yyyy-MM-ddTHH:mm:ss">
 
       <label>Rute</label>
-      <input type="text" placeholder="...">
+      <input type="text" id="rute" required placeholder="...">
 
-      <button class="btn">ADD</button>
-    </div>
+      <button class="btn" type="submit">ADD</button>
+    </form>
+    <div id="result" style="margin-top:10px;color:green;"></div>
   </div>
+</div>
+
+<script>
+document.getElementById('scheduleForm').addEventListener('submit', async function(e) {
+  e.preventDefault();
+
+  // Fungsi untuk menambah detik dan timezone (Z = UTC)
+  function toIso8601WithTZ(val) {
+    if (!val) return null;
+    // val: yyyy-MM-ddTHH:mm atau yyyy-MM-ddTHH:mm:ss
+    let withSeconds = val.length === 16 ? val + ':00' : val;
+    return withSeconds + 'Z'; // Tambahkan Z (UTC)
+  }
+
+  const data = {
+  keretaId: parseInt(document.getElementById('keretaId').value),
+  tanggal: toIso8601WithTZ(document.getElementById('tanggal').value),
+  waktuKeberangkatan: toIso8601WithTZ(document.getElementById('waktuKeberangkatan').value),
+  rute: document.getElementById('rute').value
+    .split(',')
+    .map(s => s.trim())
+    .filter(s => s.length > 0) 
+};
+
+  const token = localStorage.getItem('token');
+  const response = await fetch('/api/schedule', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: "Bearer " + token
+    },
+    body: JSON.stringify(data)
+  });
+  if (response.ok) {
+    document.getElementById('result').textContent = 'Jadwal berhasil ditambahkan!';
+    document.getElementById('scheduleForm').reset();
+    document.getElementById('result').style.color = 'green';
+  } else {
+    document.getElementById('result').textContent = 'Gagal menambah jadwal!';
+    document.getElementById('result').style.color = 'red';
+  }
+});
+</script>
 
 </body>
 </html>
