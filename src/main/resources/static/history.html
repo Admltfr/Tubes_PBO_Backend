@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Ticket Purchase History - Train-U</title>
+  <style>
+    * { box-sizing: border-box; font-family: Arial, sans-serif; }
+    body { margin: 0; background-color: #f5f5f5; display: flex; flex-direction: column; min-height: 100vh; }
+    header { background-color: #003366; text-align: center; padding: 20px; }
+    header img { width: 160px; }
+    h2 { text-align: center; color: #d87c2a; margin: 20px 0; }
+    .train-list { padding: 20px; flex: 1; }
+    .train-card { background-color: white; border: 4px solid #1a4b8a; border-radius: 12px; padding: 15px 20px; margin-bottom: 20px; }
+    .train-title { font-size: 18px; font-weight: bold; color: black; margin-bottom: 10px; text-align: center; }
+    .train-info { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; }
+    .time-info { display: flex; align-items: center; gap: 10px; }
+    .time-block { text-align: center; }
+    .time-block div:first-child { font-size: 18px; font-weight: bold; }
+    .city-info { font-size: 14px; }
+    .arrow { font-size: 20px; }
+    .class-options { display: flex; gap: 10px; }
+    .class-box { text-align: center; min-width: 130px; }
+    .class-box p { margin: 4px 0; }
+    .select-button { margin-top: 5px; padding: 5px 10px; background-color: #d87c2a; color: white; border: none; border-radius: 5px; cursor: pointer; font-size: 14px; }
+    footer { background-color: #003366; display: flex; justify-content: space-around; padding: 10px 0; }
+    footer a { color: white; text-decoration: none; font-weight: bold; font-size: 16px; }
+  </style>
+</head>
+<body>
+  <header>
+    <img src="assets/logo_trainu.png" alt="Train-U Logo" />
+  </header>
+
+  <h2>Ticket Purchase History</h2>
+
+  <div class="train-list" id="historyList">
+    <!-- Riwayat pemesanan akan dimuat di sini -->
+  </div>
+
+  <footer>
+    <a href="history.html">History</a>
+    <a href="home.html">Home</a>
+    <a href="profile.html">Profile</a>
+  </footer>
+
+  <script>
+    // Ambil token jika pakai auth
+    const token = localStorage.getItem("token");
+
+    fetch("/api/pemesanan", {
+      headers: token ? { Authorization: "Bearer " + token } : {}
+    })
+      .then(response => response.json())
+      .then(data => {
+        const historyList = document.getElementById("historyList");
+        if (!data.data || data.data.length === 0) {
+          historyList.innerHTML = "<p>Belum ada riwayat pemesanan.</p>";
+          return;
+        }
+        data.data.forEach(pemesanan => {
+          // Ambil data dari response backend
+          const jadwal = pemesanan.jadwal || {};
+          const penumpang = pemesanan.penumpang || {};
+          const rute = jadwal.rute || "-";
+          const waktu = jadwal.waktuKeberangkatan ? jadwal.waktuKeberangkatan.substring(11,16) : "-";
+          const tanggal = jadwal.tanggal ? jadwal.tanggal.substring(0,10) : "-";
+          const asal = rute.split("-")[0]?.trim() || "-";
+          const tujuan = rute.split("-")[1]?.trim() || "-";
+          const kelas = pemesanan.kelas || "-";
+          const harga = pemesanan.harga ? "IDR " + pemesanan.harga.toLocaleString("id-ID") : "-";
+          const namaKereta = jadwal.keretaNama || "Kereta";
+
+          const card = document.createElement("div");
+          card.className = "train-card";
+          card.innerHTML = `
+            <div class="train-title">${namaKereta}</div>
+            <div class="train-info">
+              <div class="time-info">
+                <div class="time-block">
+                  <div>${waktu}</div>
+                  <div>${asal}</div>
+                </div>
+                <div class="arrow">→</div>
+                <div class="time-block">
+                  <div>${waktu}</div>
+                  <div>${tujuan}</div>
+                </div>
+              </div>
+              <div class="class-options">
+                <div class="class-box">
+                  <p><strong>${kelas} Class</strong></p>
+                  <p>${harga}</p>
+                  <button class="select-button" disabled>Booked</button>
+                </div>
+              </div>
+            </div>
+          `;
+          historyList.appendChild(card);
+        });
+      })
+      .catch(error => {
+        document.getElementById("historyList").innerHTML = "<p>Gagal memuat riwayat pemesanan.</p>";
+      });
+  </script>
+</body>
+</html>
