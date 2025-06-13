@@ -103,30 +103,30 @@
               body: JSON.stringify({ username, password }),
             });
 
-          if (response.ok) {
-            const data = await response.json();
-            localStorage.setItem("token", data.data);
-            // Ambil userId dulu, baru redirect
-            fetch("/api/users/me", { headers: { Authorization: "Bearer " + data.data } })
-              .then(res => res.json())
-              .then(userData => {
-                const userId = userData.data?.id;
-                if (userId) {
-                  localStorage.setItem("userId", userId);
-                }
-                window.location.href = "home.html";
-              });
-          } else if (response.status === 401) {
+            if (response.ok) {
+              const data = await response.json();
+              localStorage.setItem("token", data.data);
+              // Ambil userId dulu, baru redirect
+              fetch("/api/users/me", {
+                headers: { Authorization: "Bearer " + data.data },
+              })
+                .then((res) => res.json())
+                .then((userData) => {
+                  const userId = userData.data?.id;
+                  if (userId) {
+                    localStorage.setItem("userId", userId);
+                  }
+                  window.location.href = "home.html";
+                });
+            } else if (response.status === 401) {
               errorMsgDiv.textContent = "Username atau password salah.";
               errorMsgDiv.style.display = "block";
-            
             } else {
               const errorData = await response.json();
               const errorMessage = errorData.message || "Terjadi kesalahan.";
               errorMsgDiv.textContent = errorMessage;
               errorMsgDiv.style.display = "block";
             }
-
           } catch (error) {
             errorMsgDiv.textContent = "Tidak dapat terhubung ke server.";
             errorMsgDiv.style.display = "block";

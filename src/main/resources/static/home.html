@@ -1,125 +1,226 @@
 <!DOCTYPE html>
 <html lang="id">
-<head>
-  <meta charset="UTF-8" />
-  <title>Jadwal Kereta Hari Ini - Train-U</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <style>
-    body { margin: 0; font-family: Arial, sans-serif; background: #f5f5f5; }
-    header { background: #003366; text-align: center; padding: 20px 0 10px 0; }
-    header img { width: 180px; }
-    h2 { text-align: center; color: #d87c2a; margin: 20px 0; }
-    .schedule-list { max-width: 800px; margin: 30px auto 0 auto; }
-    .schedule-card {
-      background: #fff; border: 4px solid #1a4b8a; border-radius: 12px; margin-bottom: 25px; padding: 18px 20px;
-      display: flex; flex-direction: column; gap: 10px;
-    }
-    .schedule-title { font-size: 1.3em; font-weight: bold; margin-bottom: 8px; text-align: center; }
-    .schedule-info { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px; }
-    .time-block { text-align: center; }
-    .time-block div:first-child { font-size: 1.2em; font-weight: bold; }
-    .arrow { font-size: 1.5em; }
-    .class-info { margin-top: 10px; font-size: 1.1em; color: #1a4b8a; font-weight: bold; text-align: center; }
-    .price-info { margin-top: 2px; font-size: 1.1em; color: #d87c2a; font-weight: bold; text-align: center; }
-    .tanggal-info { margin-top: 2px; font-size: 1em; color: #333; text-align: center; }
-    .order-btn {
-      margin: 12px auto 0 auto; background: #ffa500; color: #fff; border: none; border-radius: 5px;
-      padding: 8px 24px; font-weight: bold; font-size: 1em; cursor: pointer; display: block;
-    }
-    .footer {
-      background: #003366; padding: 15px 0; text-align: center; position: fixed; width: 100vw; left: 0; bottom: 0;
-      display: flex; justify-content: center; gap: 60px;
-    }
-    .footer a { color: white; text-decoration: none; font-size: 28px; margin: 0 15px; font-weight: bold; display: inline-block; }
-    .footer a.active { color: #ff9900; }
-    @media (max-width: 600px) {
-      .schedule-list { max-width: 99vw; }
-      .schedule-card { padding: 10px 4vw; }
-      .footer { gap: 20px; }
-    }
-  </style>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"/>
-</head>
-<body>
-  <header>
-    <img src="assets/logo_trainu.png" alt="Train-U Logo" />
-  </header>
-
-  <h2>Jadwal Kereta Hari Ini</h2>
-
-  <div class="schedule-list" id="scheduleList">
-    <!-- Jadwal kereta akan dimuat di sini -->
-  </div>
-
-  <div class="footer">
-    <a href="history.html"><i class="fa-solid fa-clock-rotate-left"></i></a>
-    <a href="home.html" class="active"><i class="fa-solid fa-house"></i></a>
-    <a href="userprofile.html"><i class="fa-solid fa-user"></i></a>
-  </div>
-
-  <script>
-    // Ambil token dari localStorage (jika pakai auth)
-    const token = localStorage.getItem("token");
-    let allSchedules = [];
-
-    // Fetch jadwal dari backend
-    fetch("/api/schedules", {
-      headers: token ? { Authorization: "Bearer " + token } : {}
-    })
-      .then(response => response.json())
-      .then(data => {
-        if (!data.data || data.data.length === 0) {
-          document.getElementById("scheduleList").innerHTML = "<p>Tidak ada jadwal tersedia.</p>";
-          return;
+  <head>
+    <meta charset="UTF-8" />
+    <title>Jadwal Kereta Hari Ini - Train-U</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <style>
+      body {
+        margin: 0;
+        font-family: Arial, sans-serif;
+        background: #f5f5f5;
+      }
+      header {
+        background: #003366;
+        text-align: center;
+        padding: 20px 0 10px 0;
+      }
+      header img {
+        width: 180px;
+      }
+      h2 {
+        text-align: center;
+        color: #d87c2a;
+        margin: 20px 0;
+      }
+      .schedule-list {
+        max-width: 800px;
+        margin: 30px auto 0 auto;
+      }
+      .schedule-card {
+        background: #fff;
+        border: 4px solid #1a4b8a;
+        border-radius: 12px;
+        margin-bottom: 25px;
+        padding: 18px 20px;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+      }
+      .schedule-title {
+        font-size: 1.3em;
+        font-weight: bold;
+        margin-bottom: 8px;
+        text-align: center;
+      }
+      .schedule-info {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        gap: 10px;
+      }
+      .time-block {
+        text-align: center;
+      }
+      .time-block div:first-child {
+        font-size: 1.2em;
+        font-weight: bold;
+      }
+      .arrow {
+        font-size: 1.5em;
+      }
+      .class-info {
+        margin-top: 10px;
+        font-size: 1.1em;
+        color: #1a4b8a;
+        font-weight: bold;
+        text-align: center;
+      }
+      .price-info {
+        margin-top: 2px;
+        font-size: 1.1em;
+        color: #d87c2a;
+        font-weight: bold;
+        text-align: center;
+      }
+      .tanggal-info {
+        margin-top: 2px;
+        font-size: 1em;
+        color: #333;
+        text-align: center;
+      }
+      .order-btn {
+        margin: 12px auto 0 auto;
+        background: #ffa500;
+        color: #fff;
+        border: none;
+        border-radius: 5px;
+        padding: 8px 24px;
+        font-weight: bold;
+        font-size: 1em;
+        cursor: pointer;
+        display: block;
+      }
+      .footer {
+        background: #003366;
+        padding: 15px 0;
+        text-align: center;
+        position: fixed;
+        width: 100vw;
+        left: 0;
+        bottom: 0;
+        display: flex;
+        justify-content: center;
+        gap: 60px;
+      }
+      .footer a {
+        color: white;
+        text-decoration: none;
+        font-size: 28px;
+        margin: 0 15px;
+        font-weight: bold;
+        display: inline-block;
+      }
+      .footer a.active {
+        color: #ff9900;
+      }
+      @media (max-width: 600px) {
+        .schedule-list {
+          max-width: 99vw;
         }
-        allSchedules = data.data;
-        renderSchedules(allSchedules);
+        .schedule-card {
+          padding: 10px 4vw;
+        }
+        .footer {
+          gap: 20px;
+        }
+      }
+    </style>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"
+    />
+  </head>
+  <body>
+    <header>
+      <img src="assets/logo_trainu.png" alt="Train-U Logo" />
+    </header>
+
+    <h2>Jadwal Kereta Hari Ini</h2>
+
+    <div class="schedule-list" id="scheduleList">
+      <!-- Jadwal kereta akan dimuat di sini -->
+    </div>
+
+    <div class="footer">
+      <a href="history.html"><i class="fa-solid fa-clock-rotate-left"></i></a>
+      <a href="home.html" class="active"><i class="fa-solid fa-house"></i></a>
+      <a href="userprofile.html"><i class="fa-solid fa-user"></i></a>
+    </div>
+
+    <script>
+      // Ambil token dari localStorage (jika pakai auth)
+      const token = localStorage.getItem("token");
+      let allSchedules = [];
+
+      // Fetch jadwal dari backend
+      fetch("/api/schedules", {
+        headers: token ? { Authorization: "Bearer " + token } : {},
       })
-      .catch(error => {
-        document.getElementById("scheduleList").innerHTML = "<p>Gagal memuat jadwal.</p>";
-      });
+        .then((response) => response.json())
+        .then((data) => {
+          if (!data.data || data.data.length === 0) {
+            document.getElementById("scheduleList").innerHTML =
+              "<p>Tidak ada jadwal tersedia.</p>";
+            return;
+          }
+          allSchedules = data.data;
+          renderSchedules(allSchedules);
+        })
+        .catch((error) => {
+          document.getElementById("scheduleList").innerHTML =
+            "<p>Gagal memuat jadwal.</p>";
+        });
 
-    function renderSchedules(schedules) {
-      const scheduleList = document.getElementById("scheduleList");
-      scheduleList.innerHTML = "";
-      schedules.forEach(jadwal => {
-        // rute bisa array atau string, handle keduanya
-        let rute = "-";
-        let asal = "-";
-        let tujuan = "-";
-        if (Array.isArray(jadwal.rute)) {
-          rute = jadwal.rute.join(" - ");
-          asal = jadwal.rute[0] || "-";
-          tujuan = jadwal.rute[jadwal.rute.length-1] || "-";
-        } else if (typeof jadwal.rute === "string") {
-          rute = jadwal.rute;
-          asal = rute.split("-")[0]?.trim() || "-";
-          tujuan = rute.split("-")[1]?.trim() || "-";
-        }
+      function renderSchedules(schedules) {
+        const scheduleList = document.getElementById("scheduleList");
+        scheduleList.innerHTML = "";
+        schedules.forEach((jadwal) => {
+          // rute bisa array atau string, handle keduanya
+          let rute = "-";
+          let asal = "-";
+          let tujuan = "-";
+          if (Array.isArray(jadwal.rute)) {
+            rute = jadwal.rute.join(" - ");
+            asal = jadwal.rute[0] || "-";
+            tujuan = jadwal.rute[jadwal.rute.length - 1] || "-";
+          } else if (typeof jadwal.rute === "string") {
+            rute = jadwal.rute;
+            asal = rute.split("-")[0]?.trim() || "-";
+            tujuan = rute.split("-")[1]?.trim() || "-";
+          }
 
-        // Format jam keberangkatan dan tiba
-        let waktu = "-";
-        let waktuTiba = "-";
-        let tanggal = "-";
-        if (jadwal.waktuKeberangkatan) {
-          const d = new Date(jadwal.waktuKeberangkatan);
-          waktu = d.toTimeString().substring(0,5);
-          tanggal = d.toLocaleDateString("id-ID", { day: "2-digit", month: "long", year: "numeric" });
-          // waktu tiba = waktu keberangkatan + 2 jam
-          const tiba = new Date(d.getTime() + 2 * 60 * 60 * 1000);
-          waktuTiba = tiba.toTimeString().substring(0,5);
-        }
+          // Format jam keberangkatan dan tiba
+          let waktu = "-";
+          let waktuTiba = "-";
+          let tanggal = "-";
+          if (jadwal.waktuKeberangkatan) {
+            const d = new Date(jadwal.waktuKeberangkatan);
+            waktu = d.toTimeString().substring(0, 5);
+            tanggal = d.toLocaleDateString("id-ID", {
+              day: "2-digit",
+              month: "long",
+              year: "numeric",
+            });
+            // waktu tiba = waktu keberangkatan + 2 jam
+            const tiba = new Date(d.getTime() + 2 * 60 * 60 * 1000);
+            waktuTiba = tiba.toTimeString().substring(0, 5);
+          }
 
-        // Kelas dan harga
-        const kelas = jadwal.kelas || "-";
-        const harga = jadwal.harga !== undefined ? "IDR " + Number(jadwal.harga).toLocaleString("id-ID") : "-";
+          // Kelas dan harga
+          const kelas = jadwal.kelas || "-";
+          const harga =
+            jadwal.harga !== undefined
+              ? "IDR " + Number(jadwal.harga).toLocaleString("id-ID")
+              : "-";
 
-        // Nama kereta (hanya tampilkan ID, jika ingin nama fetch lagi ke /api/trains/{id})
-        const namaKereta = "Kereta ID: " + (jadwal.keretaId || "-");
+          // Nama kereta (hanya tampilkan ID, jika ingin nama fetch lagi ke /api/trains/{id})
+          const namaKereta = "Kereta ID: " + (jadwal.keretaId || "-");
 
-        const card = document.createElement("div");
-        card.className = "schedule-card";
-        card.innerHTML = `
+          const card = document.createElement("div");
+          card.className = "schedule-card";
+          card.innerHTML = `
           <div class="schedule-title">${namaKereta} (${rute})</div>
           <div class="schedule-info">
             <div class="time-block">
@@ -137,18 +238,21 @@
           <div class="tanggal-info">Tanggal: ${tanggal}</div>
           <button class="order-btn" data-jadwal-id="${jadwal.id}">Pesan</button>
         `;
-        scheduleList.appendChild(card);
-      });
-    }
-
-    // Event delegation untuk tombol Pesan
-    document.getElementById("scheduleList").addEventListener("click", function(e) {
-      if (e.target.classList.contains("order-btn")) {
-        e.preventDefault();
-        const jadwalId = e.target.getAttribute("data-jadwal-id");
-        window.location.href = "ticketconfirmation.html?jadwalId=" + jadwalId;
+          scheduleList.appendChild(card);
+        });
       }
-    });
-  </script>
-</body>
+
+      // Event delegation untuk tombol Pesan
+      document
+        .getElementById("scheduleList")
+        .addEventListener("click", function (e) {
+          if (e.target.classList.contains("order-btn")) {
+            e.preventDefault();
+            const jadwalId = e.target.getAttribute("data-jadwal-id");
+            window.location.href =
+              "ticketconfirmation.html?jadwalId=" + jadwalId;
+          }
+        });
+    </script>
+  </body>
 </html>

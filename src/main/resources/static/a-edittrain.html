@@ -1,168 +1,170 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>Add Train - Train-U</title>
-  <style>
-    body {
-      margin: 0;
-      font-family: Arial, sans-serif;
-      background-color: white;
-    }
-
-    .header {
-      background-color: #003366;
-      padding: 20px;
-      text-align: center;
-    }
-
-    .header img {
-      height: 50px;
-    }
-
-    .container {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      padding: 30px 0;
-    }
-
-    .card {
-      background-color: #f5f5f5;
-      padding: 40px 30px;
-      border-radius: 10px;
-      box-shadow: 0 0 10px rgba(0,0,0,0.15);
-      width: 400px;
-      text-align: center;
-    }
-
-    .card h2 {
-      color: #ff6600;
-      margin-bottom: 25px;
-    }
-
-    label {
-      display: block;
-      text-align: left;
-      margin: 10px 0 5px;
-      font-weight: bold;
-    }
-
-    input {
-      width: 100%;
-      padding: 10px;
-      border-radius: 5px;
-      border: 1px solid #ccc;
-      margin-bottom: 10px;
-    }
-
-    .btn {
-      background-color: #ff6600;
-      color: white;
-      padding: 10px;
-      width: 100%;
-      border: none;
-      border-radius: 5px;
-      font-weight: bold;
-      cursor: pointer;
-    }
-
-    .btn:hover {
-      background-color: #ff6600;
-    }
-  </style>
-</head>
-<body>
-
-  <div class="header">
-    <img src="logo.png" alt="Train-U Logo">
-  </div>
-
-  <div class="container">
-    <div class="card">
-      <h2>Edit Train</h2>
-
-      <label>Kereta Id</label>
-      <input type="text" id="keretaId" disabled>
-
-      <label>Asal</label>
-      <input type="text" id="asal">
-
-      <label>Tujuan</label>
-      <input type="text" id="tujuan">
-
-      <button class="btn" id="editBtn">UPDATE</button>
-    </div>
-  </div>
-
-  <script>
-  // Get id from URL
-  const params = new URLSearchParams(window.location.search);
-  const id = parseInt(params.get('id'), 10);
-  const token = localStorage.getItem('token');
-
-  // Fetch all kereta, then find the correct entry by id
-  fetch('/api/trains', {
-    headers: {
-      'Accept': 'application/json',
-      'Authorization': 'Bearer ' + token
-    }
-  })
-  .then(response => response.json())
-  .then(data => {
-    const keretaList = data.data || [];
-    const kereta = keretaList.find(k => k.id === id);
-    if (!kereta) {
-      alert('Data kereta tidak ditemukan!');
-      window.location.href = 'a-listtrain.html';
-      return;
-    }
-    document.getElementById('keretaId').value = kereta.id;
-    document.getElementById('asal').placeholder = kereta.asal;
-    document.getElementById('asal').value = kereta.asal;
-    document.getElementById('tujuan').placeholder = kereta.tujuan;
-    document.getElementById('tujuan').value = kereta.tujuan;
-  })
-  .catch(() => {
-    alert('Gagal mengambil data kereta!');
-    window.location.href = 'a-listtrain.html';
-  });
-
-  // Handle update
-  document.getElementById('editBtn').addEventListener('click', function(e) {
-    e.preventDefault();
-    const asal = document.getElementById('asal').value.trim();
-    const tujuan = document.getElementById('tujuan').value.trim();
-
-    if (!asal || !tujuan) {
-      alert('Asal dan Tujuan harus diisi!');
-      return;
-    }
-
-    fetch(`/api/trains/update/${id}`, {
-      method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json',
-        'Accept': 'application/json',
-        'Authorization': 'Bearer ' + token
-      },
-      body: JSON.stringify({ id, asal, tujuan })
-    })
-    .then(response => {
-      if (!response.ok) {
-        return response.json().then(err => { throw new Error(err.message || 'Gagal update kereta'); });
+  <head>
+    <meta charset="UTF-8" />
+    <title>Add Train - Train-U</title>
+    <style>
+      body {
+        margin: 0;
+        font-family: Arial, sans-serif;
+        background-color: white;
       }
-      return response.json();
-    })
-    .then(() => {
-      alert('Kereta berhasil diupdate!');
-      window.location.href = 'a-listtrain.html';
-    })
-    .catch(err => {
-      alert('Gagal update kereta: ' + err.message);
-    });
-  });
-  </script>
 
-</body>
+      .header {
+        background-color: #003366;
+        padding: 20px;
+        text-align: center;
+      }
+
+      .header img {
+        height: 50px;
+      }
+
+      .container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 30px 0;
+      }
+
+      .card {
+        background-color: #f5f5f5;
+        padding: 40px 30px;
+        border-radius: 10px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.15);
+        width: 400px;
+        text-align: center;
+      }
+
+      .card h2 {
+        color: #ff6600;
+        margin-bottom: 25px;
+      }
+
+      label {
+        display: block;
+        text-align: left;
+        margin: 10px 0 5px;
+        font-weight: bold;
+      }
+
+      input {
+        width: 100%;
+        padding: 10px;
+        border-radius: 5px;
+        border: 1px solid #ccc;
+        margin-bottom: 10px;
+      }
+
+      .btn {
+        background-color: #ff6600;
+        color: white;
+        padding: 10px;
+        width: 100%;
+        border: none;
+        border-radius: 5px;
+        font-weight: bold;
+        cursor: pointer;
+      }
+
+      .btn:hover {
+        background-color: #ff6600;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="header">
+      <img src="logo.png" alt="Train-U Logo" />
+    </div>
+
+    <div class="container">
+      <div class="card">
+        <h2>Edit Train</h2>
+
+        <label>Kereta Id</label>
+        <input type="text" id="keretaId" disabled />
+
+        <label>Asal</label>
+        <input type="text" id="asal" />
+
+        <label>Tujuan</label>
+        <input type="text" id="tujuan" />
+
+        <button class="btn" id="editBtn">UPDATE</button>
+      </div>
+    </div>
+
+    <script>
+      // Get id from URL
+      const params = new URLSearchParams(window.location.search);
+      const id = parseInt(params.get("id"), 10);
+      const token = localStorage.getItem("token");
+
+      // Fetch all kereta, then find the correct entry by id
+      fetch("/api/trains", {
+        headers: {
+          Accept: "application/json",
+          Authorization: "Bearer " + token,
+        },
+      })
+        .then((response) => response.json())
+        .then((data) => {
+          const keretaList = data.data || [];
+          const kereta = keretaList.find((k) => k.id === id);
+          if (!kereta) {
+            alert("Data kereta tidak ditemukan!");
+            window.location.href = "a-listtrain.html";
+            return;
+          }
+          document.getElementById("keretaId").value = kereta.id;
+          document.getElementById("asal").placeholder = kereta.asal;
+          document.getElementById("asal").value = kereta.asal;
+          document.getElementById("tujuan").placeholder = kereta.tujuan;
+          document.getElementById("tujuan").value = kereta.tujuan;
+        })
+        .catch(() => {
+          alert("Gagal mengambil data kereta!");
+          window.location.href = "a-listtrain.html";
+        });
+
+      // Handle update
+      document
+        .getElementById("editBtn")
+        .addEventListener("click", function (e) {
+          e.preventDefault();
+          const asal = document.getElementById("asal").value.trim();
+          const tujuan = document.getElementById("tujuan").value.trim();
+
+          if (!asal || !tujuan) {
+            alert("Asal dan Tujuan harus diisi!");
+            return;
+          }
+
+          fetch(`/api/trains/update/${id}`, {
+            method: "PUT",
+            headers: {
+              "Content-Type": "application/json",
+              Accept: "application/json",
+              Authorization: "Bearer " + token,
+            },
+            body: JSON.stringify({ id, asal, tujuan }),
+          })
+            .then((response) => {
+              if (!response.ok) {
+                return response.json().then((err) => {
+                  throw new Error(err.message || "Gagal update kereta");
+                });
+              }
+              return response.json();
+            })
+            .then(() => {
+              alert("Kereta berhasil diupdate!");
+              window.location.href = "a-listtrain.html";
+            })
+            .catch((err) => {
+              alert("Gagal update kereta: " + err.message);
+            });
+        });
+    </script>
+  </body>
 </html>

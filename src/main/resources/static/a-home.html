@@ -1,96 +1,97 @@
 <!DOCTYPE html>
 <html lang="id">
-<head>
-  <meta charset="UTF-8">
-  <title>Admin Home - Train-U</title>
-  <style>
-    body {
-      margin: 0;
-      font-family: Arial, sans-serif;
-      background-color: white;
-    }
+  <head>
+    <meta charset="UTF-8" />
+    <title>Admin Home - Train-U</title>
+    <style>
+      body {
+        margin: 0;
+        font-family: Arial, sans-serif;
+        background-color: white;
+      }
 
-    .header {
-      background-color: #003366;
-      padding: 20px;
-      text-align: center;
-    }
+      .header {
+        background-color: #003366;
+        padding: 20px;
+        text-align: center;
+      }
 
-    .header img {
-      height: 50px;
-    }
+      .header img {
+        height: 50px;
+      }
 
-    .container {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: calc(100vh - 80px); /* Full screen minus header/footer */
-    }
+      .container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: calc(100vh - 80px); /* Full screen minus header/footer */
+      }
 
-    .card {
-      background-color: #f5f5f5;
-      padding: 40px 30px;
-      border-radius: 10px;
-      box-shadow: 0 0 10px rgba(0,0,0,0.15);
-      width: 300px;
-      text-align: center;
-    }
+      .card {
+        background-color: #f5f5f5;
+        padding: 40px 30px;
+        border-radius: 10px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.15);
+        width: 300px;
+        text-align: center;
+      }
 
-    .card h2 {
-      color: #ff6600;
-      margin-bottom: 30px;
-    }
+      .card h2 {
+        color: #ff6600;
+        margin-bottom: 30px;
+      }
 
-    .button {
-      display: block;
-      width: 100%;
-      padding: 12px;
-      margin: 10px 0;
-      font-size: 15px;
-      font-weight: bold;
-      border: none;
-      border-radius: 5px;
-      cursor: pointer;
-      text-decoration: none;
-      text-align: center;
-    }
+      .button {
+        display: block;
+        width: 100%;
+        padding: 12px;
+        margin: 10px 0;
+        font-size: 15px;
+        font-weight: bold;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        text-decoration: none;
+        text-align: center;
+      }
 
-    .schedule-btn, .train-btn {
-      background-color: #ff6600;
-      color: white;
-    }
+      .schedule-btn,
+      .train-btn {
+        background-color: #ff6600;
+        color: white;
+      }
 
-    .train-btn:focus {
-      outline: 2px solid #0099ff;
-    }
+      .train-btn:focus {
+        outline: 2px solid #0099ff;
+      }
 
-    .logout-btn {
-      background-color: red;
-      color: white;
-    }
+      .logout-btn {
+        background-color: red;
+        color: white;
+      }
 
-    .footer {
-      height: 8px;
-      background-color: #003366;
-    }
-  </style>
-</head>
-<body>
-
-  <div class="header">
-    <img src="logo.png" alt="Train-U Logo">
-  </div>
-
-  <div class="container">
-    <div class="card">
-      <h2>Admin Setting</h2>
-      <a href="alistschedule.html" class="button schedule-btn">SCHEDULE SETTING</a>
-      <a href="alisttrain.html" class="button train-btn">TRAIN SETTING</a>
-      <button class="button logout-btn">LOGOUT</button>
+      .footer {
+        height: 8px;
+        background-color: #003366;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="header">
+      <img src="logo.png" alt="Train-U Logo" />
     </div>
-  </div>
 
-  <div class="footer"></div>
+    <div class="container">
+      <div class="card">
+        <h2>Admin Setting</h2>
+        <a href="alistschedule.html" class="button schedule-btn"
+          >SCHEDULE SETTING</a
+        >
+        <a href="alisttrain.html" class="button train-btn">TRAIN SETTING</a>
+        <button class="button logout-btn">LOGOUT</button>
+      </div>
+    </div>
 
-</body>
+    <div class="footer"></div>
+  </body>
 </html>
