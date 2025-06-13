@@ -36,6 +36,19 @@ public class JadwalController {
     @Autowired
     private ApiResponseMapper responseBuilder;
 
+    @GetMapping("/{id}")
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<ApiResponse<JadwalResponse>> getJadwalById(@PathVariable Long id) {
+        try {
+            JadwalResponse jadwal = jadwalService.getJadwalById(id);
+            ApiResponse<JadwalResponse> response = responseBuilder.ToApiResponse(HttpStatus.OK, "Berhasil mengambil data jadwal", jadwal);
+            return ResponseEntity.ok(response);
+        } catch (ApiException ex) {
+            throw ex;
+        } catch (Exception ex) {
+            throw new ApiException("Jadwal dengan ID " + id + " tidak ditemukan");
+        }
+    }
 
     @GetMapping
     @PreAuthorize("isAuthenticated()")

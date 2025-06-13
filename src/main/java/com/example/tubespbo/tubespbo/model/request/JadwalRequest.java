@@ -21,13 +21,8 @@ public class JadwalRequest {
     private Long keretaId;
 
     // Formatnya pakek ISO-8601 yak
-    @NotNull(message = "Tanggal tidak boleh kosong")
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ssX")
-    private Date tanggal;
-
-    // Formatnya pakek ISO-8601 yak
     @NotNull(message = "Waktu keberangkatan tidak boleh kosong")
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ssX")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
     private Date waktuKeberangkatan;
 
     @NotNull(message = "Rute tidak boleh kosong")

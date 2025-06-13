@@ -43,7 +43,6 @@ public class JadwalService {
         KeretaEntity kereta = optionalKereta.get();
 
         JadwalEntity jadwal = JadwalEntity.builder()
-                .tanggal(req.getTanggal())
                 .waktuKeberangkatan(req.getWaktuKeberangkatan())
                 .rute(req.getRute())
                 .kereta(kereta)
@@ -83,7 +82,6 @@ public class JadwalService {
         }
         KeretaEntity kereta = optionalKereta.get();
 
-        jadwal.setTanggal(req.getTanggal());
         jadwal.setWaktuKeberangkatan(req.getWaktuKeberangkatan());
         jadwal.setRute(req.getRute());
         jadwal.setKereta(kereta);
