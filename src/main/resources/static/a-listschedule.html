@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Schedule List - Train-U</title>
+    <style>
+      body {
+        margin: 0;
+        font-family: Arial, sans-serif;
+        background-color: white;
+      }
+      .header {
+        background-color: #003366;
+        padding: 20px;
+        text-align: center;
+      }
+      .header img {
+        height: 50px;
+      }
+      .container {
+        padding: 30px;
+        text-align: center;
+      }
+      h2 {
+        color: #e28a00;
+        margin-bottom: 20px;
+      }
+      .add-button {
+        background-color: #00cc00;
+        color: white;
+        border: none;
+        padding: 10px 20px;
+        margin-bottom: 20px;
+        font-weight: bold;
+        border-radius: 5px;
+        cursor: pointer;
+      }
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        margin: auto;
+      }
+      th,
+      td {
+        border: 1px solid black;
+        padding: 12px;
+        text-align: center;
+      }
+      th {
+        background-color: #f2f2f2;
+      }
+      .btn-edit {
+        background-color: #ffa500;
+        color: white;
+        border: none;
+        padding: 6px 14px;
+        border-radius: 5px;
+        cursor: pointer;
+        font-weight: bold;
+      }
+      .btn-delete {
+        background-color: red;
+        color: white;
+        border: none;
+        padding: 6px 14px;
+        border-radius: 5px;
+        cursor: pointer;
+        font-weight: bold;
+      }
+      .msg {
+        margin: 10px 0;
+        font-weight: bold;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="header">
+      <img src="logo_trainu.png" alt="Train-U Logo" />
+    </div>
+    <div class="container">
+      <h2>Setting Schedule Admin</h2>
+      <button
+        class="add-button"
+        onclick="window.location.href='a-addschedule.html'"
+      >
+        ADD SCHEDULE
+      </button>
+      <div id="msg" class="msg"></div>
+      <table id="scheduleTable">
+        <thead>
+          <tr>
+            <th>Jadwal Id</th>
+            <th>Kereta Id</th>
+            <th>Waktu Keberangkatan</th>
+            <th>Rute</th>
+            <th>Harga</th>
+            <th>Kelas</th>
+            <th>Edit</th>
+            <th>Delete</th>
+          </tr>
+        </thead>
+        <tbody>
+          <!-- Jadwal akan diisi lewat JS -->
+        </tbody>
+      </table>
+    </div>
+    <script>
+      const token = localStorage.getItem("token");
+      if (!token) {
+        window.location.href = "index.html";
+      }
+
+      const msgDiv = document.getElementById("msg");
+      const tableBody = document.querySelector("#scheduleTable tbody");
+
+      function formatDatetime(dt) {
+        if (!dt) return "-";
+        // dt bisa "2025-06-12T12:33:00.000+00:00" atau "2025-06-12T12:33:00Z"
+        const d = new Date(dt);
+        if (isNaN(d)) return dt;
+        // Format: yyyy-MM-dd HH:mm
+        return (
+          d.getFullYear() +
+          "-" +
+          String(d.getMonth() + 1).padStart(2, "0") +
+          "-" +
+          String(d.getDate()).padStart(2, "0") +
+          " " +
+          String(d.getHours()).padStart(2, "0") +
+          ":" +
+          String(d.getMinutes()).padStart(2, "0")
+        );
+      }
+
+      // Fetch semua jadwal
+      async function fetchJadwal() {
+        tableBody.innerHTML = "<tr><td colspan='6'>Loading...</td></tr>";
+        const response = await fetch("/api/schedules", {
+          headers: { Authorization: "Bearer " + token },
+        });
+        if (response.ok) {
+          const data = await response.json();
+          const jadwals = data.data || [];
+          if (jadwals.length === 0) {
+            tableBody.innerHTML =
+              "<tr><td colspan='6'>Belum ada jadwal</td></tr>";
+            return;
+          }
+          tableBody.innerHTML = "";
+          jadwals.forEach((jadwal) => {
+            const tr = document.createElement("tr");
+            tr.innerHTML = `
+            <td>${jadwal.id}</td>
+            <td>${jadwal.keretaId}</td>
+            <td>${formatDatetime(jadwal.waktuKeberangkatan)}</td>
+            <td>${jadwal.rute ? jadwal.rute.join(", ") : ""}</td>
+            <td>${jadwal.harga}</td>
+            <td>${jadwal.kelas}</td>
+            <td><button class="btn-edit" onclick="editJadwal(${
+              jadwal.id
+            })">EDIT</button></td>
+            <td><button class="btn-delete" onclick="deleteJadwal(${
+              jadwal.id
+            })">DELETE</button></td>
+          `;
+            tableBody.appendChild(tr);
+          });
+        } else {
+          tableBody.innerHTML =
+            "<tr><td colspan='6'>Gagal memuat data jadwal</td></tr>";
+        }
+      }
+
+      // Edit jadwal
+      function editJadwal(id) {
+        window.location.href = `a-editschedule.html?id=${id}`;
+      }
+
+      // Delete jadwal
+      async function deleteJadwal(id) {
+        if (!confirm("Yakin ingin menghapus jadwal ini?")) return;
+        msgDiv.textContent = "Menghapus...";
+        msgDiv.style.color = "black";
+        const response = await fetch(`/api/schedules/delete/${id}`, {
+          method: "DELETE",
+          headers: { Authorization: "Bearer " + token },
+        });
+        if (response.ok) {
+          msgDiv.textContent = "Jadwal berhasil dihapus!";
+          msgDiv.style.color = "green";
+          fetchJadwal();
+        } else {
+          const res = await response.json().catch(() => ({}));
+          msgDiv.textContent = res.message || "Gagal menghapus jadwal!";
+          msgDiv.style.color = "red";
+        }
+      }
+
+      // Jalankan saat halaman dibuka
+      fetchJadwal();
+    </script>
+  </body>
+</html>
