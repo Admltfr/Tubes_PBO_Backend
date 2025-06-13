@@ -24,40 +24,7 @@
     h2 {
       text-align: center;
       color: #d87c2a;
-      margin: 20px 0 10px 0;
-    }
-    .filter-bar {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      background: #fff;
-      border-radius: 8px;
-      padding: 12px 16px;
-      margin: 0 20px 20px 20px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.04);
-    }
-    .filter-input {
-      padding: 8px 12px;
-      border: 1px solid #ccc;
-      border-radius: 6px;
-      font-size: 15px;
-      width: 120px;
-    }
-    #dateInput {
-      width: 160px;
-    }
-    .filter-btn, .sort-btn {
-      background: #d87c2a;
-      color: #fff;
-      border: none;
-      border-radius: 6px;
-      padding: 8px 16px;
-      font-size: 15px;
-      cursor: pointer;
-      font-weight: bold;
-    }
-    .sort-btn {
-      background: #ff9800;
+      margin: 20px 0;
     }
     .schedule-list {
       padding: 20px;
@@ -165,15 +132,6 @@
 
   <h2>Jadwal Kereta Hari Ini</h2>
 
-  <!-- Filter Bar -->
-  <div class="filter-bar">
-    <input type="text" id="fromInput" class="filter-input" placeholder="From" />
-    <input type="text" id="toInput" class="filter-input" placeholder="To" />
-    <input type="date" id="dateInput" class="filter-input" />
-    <button id="filterBtn" class="filter-btn">🔍</button>
-    <button id="sortBtn" class="sort-btn">⇅ Sort & Filter</button>
-  </div>
-
   <div class="schedule-list" id="scheduleList">
     <!-- Jadwal kereta akan dimuat di sini -->
   </div>
@@ -261,47 +219,13 @@
       });
     }
 
-    // Filter logic
-    document.getElementById('filterBtn').onclick = function() {
-      const from = document.getElementById('fromInput').value.toLowerCase();
-      const to = document.getElementById('toInput').value.toLowerCase();
-      const date = document.getElementById('dateInput').value;
-      const filtered = allSchedules.filter(jadwal => {
-        let asal = "-";
-        let tujuan = "-";
-        if (Array.isArray(jadwal.rute)) {
-          asal = jadwal.rute[0] || "-";
-          tujuan = jadwal.rute[jadwal.rute.length-1] || "-";
-        } else if (typeof jadwal.rute === "string") {
-          asal = jadwal.rute.split("-")[0]?.trim() || "-";
-          tujuan = jadwal.rute.split("-")[1]?.trim() || "-";
-        }
-        const tanggal = jadwal.tanggal ? jadwal.tanggal.substring(0,10) : "-";
-        let show = true;
-        if (from && !asal.toLowerCase().includes(from)) show = false;
-        if (to && !tujuan.toLowerCase().includes(to)) show = false;
-        if (date && tanggal !== date) show = false;
-        return show;
-      });
-      renderSchedules(filtered);
-    };
-
-    // Sort & Filter button (contoh: sort by waktu keberangkatan)
-    document.getElementById('sortBtn').onclick = function() {
-      const sorted = [...allSchedules].sort((a, b) => {
-        if (!a.waktuKeberangkatan || !b.waktuKeberangkatan) return 0;
-        return a.waktuKeberangkatan.localeCompare(b.waktuKeberangkatan);
-      });
-      renderSchedules(sorted);
-    };
-
     // Event delegation untuk tombol Pesan
     document.getElementById("scheduleList").addEventListener("click", function(e) {
       if (e.target.classList.contains("order-btn")) {
         e.preventDefault();
         const jadwalId = e.target.getAttribute("data-jadwal-id");
         // Fetch ticketconfirmation.html
-        fetch("ticketconfirmation.html")
+        fetch("ticketconfirmation.html?jadwalId=" + jadwalId)
           .then(res => res.text())
           .then(html => {
             document.getElementById("ticketContent").innerHTML = `
@@ -309,7 +233,6 @@
               ${html}
             `;
             document.getElementById("ticketModal").style.display = "flex";
-            // (Opsional) Isi data jadwal ke ticketconfirmation jika perlu, misal dengan JS
           });
       }
     });
@@ -318,6 +241,7 @@
     document.body.addEventListener("click", function(e) {
       if (e.target.id === "closeTicket" || e.target.id === "ticketModal") {
         document.getElementById("ticketModal").style.display = "none";
+        document.getElementById("ticketContent").innerHTML = '<button id="closeTicket">&times;</button>';
       }
     });
   </script>

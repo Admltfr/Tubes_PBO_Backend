@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="id">
 <head>
   <meta charset="UTF-8">
   <title>Ticket Confirmation</title>
@@ -101,18 +101,18 @@
     </div>
 
     <h3>Class</h3>
-    <div id="className">...</div>
-    <div class="price" id="price">...</div>
+    <div id="className">Economy</div>
+    <div class="price" id="price">IDR 100000</div>
 
     <div class="btn-row">
-      <button class="cancel-btn" onclick="window.location.href='booking.html'">Cancel</button>
+      <button class="cancel-btn" onclick="window.parent.document.getElementById('ticketModal').style.display='none'">Cancel</button>
       <button class="book-btn" id="bookBtn">Book</button>
     </div>
     <div id="msg" style="margin-top:15px;color:red;display:none"></div>
   </div>
 
   <script>
-    // Ambil token dan jadwalId dari localStorage dan URL
+    // Ambil token dan jadwalId dari URL
     const token = localStorage.getItem("token");
     const urlParams = new URLSearchParams(window.location.search);
     const jadwalId = urlParams.get("jadwalId");
@@ -124,7 +124,7 @@
 
     // Fetch detail jadwal
     let jadwalData = {};
-    fetch(/api/schedules/${jadwalId}, {
+    fetch(`/api/schedules/${jadwalId}`, {
       headers: token ? { Authorization: "Bearer " + token } : {}
     })
       .then(res => res.json())
@@ -141,9 +141,6 @@
         const rute = Array.isArray(jadwalData.rute) ? jadwalData.rute : (jadwalData.rute || "-").split("-");
         document.getElementById("departureCity").textContent = rute[0]?.trim() || "-";
         document.getElementById("arrivalCity").textContent = rute[1]?.trim() || "-";
-        // Dummy class & price (ganti sesuai kebutuhan)
-        document.getElementById("className").textContent = "Economy";
-        document.getElementById("price").textContent = "IDR 100000";
       })
       .catch(() => {
         document.getElementById("msg").style.display = "block";
@@ -183,7 +180,9 @@
           })
         });
         if (response.ok) {
-          window.location.href = "receipt.html";
+          // Tutup modal dan redirect ke history
+          window.parent.document.getElementById('ticketModal').style.display = 'none';
+          window.location.href = "history.html";
         } else {
           const data = await response.json().catch(() => ({}));
           msgDiv.style.display = "block";
