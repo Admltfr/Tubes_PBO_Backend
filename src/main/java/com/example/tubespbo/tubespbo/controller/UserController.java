@@ -51,4 +51,6 @@ public class UserController {
             throw new ApiException("Gagal mengambil data user");
         }
     }
+
+    
 }

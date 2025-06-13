@@ -19,7 +19,7 @@ public class PemesananMapper {
     public PemesananResponse toPemesananResponse(PemesananEntity pemesanan) {
         return PemesananResponse.builder()
                 .jadwal(jadwalResponseMapper.toResponse(pemesanan.getJadwal()))
-                .penumpang(userMapper.ToPenumpangResponseMapper(pemesanan.getPenumpang()))
+                .penumpang(userMapper.ToUserResponseMapper(pemesanan.getPenumpang()))
                 .build();
     }
 

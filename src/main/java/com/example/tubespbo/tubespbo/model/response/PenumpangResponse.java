@@ -10,6 +10,8 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Builder
 public class PenumpangResponse {
+    private Long id;
+    
     private String username;
 
     private String email;

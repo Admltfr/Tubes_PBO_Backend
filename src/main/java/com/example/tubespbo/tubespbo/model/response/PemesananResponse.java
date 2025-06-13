@@ -11,6 +11,6 @@ import lombok.NoArgsConstructor;
 @Builder
 public class PemesananResponse {
     private JadwalResponse jadwal;  
-    private PenumpangResponse penumpang;
+    private UserResponse penumpang;
 }
 

@@ -45,6 +45,18 @@ public class PemesananService {
         return pemesananMapper.toPemesananResponse(optionalPemesanan.get());
     }
 
+    public List<PemesananResponse> getPemesananByPenumpangId(Long penumpangId) {
+        Optional<UserEntity> optionalUser = userRepository.findById(penumpangId);
+        if (optionalUser.isEmpty() || !(optionalUser.get() instanceof PenumpangEntity)) {
+            throw new ApiException("Penumpang dengan ID " + penumpangId + " tidak ditemukan atau bukan penumpang.");
+        }
+        PenumpangEntity penumpang = (PenumpangEntity) optionalUser.get();
+        return pemesananRepository.findAllByPenumpang_Id(penumpang.getId())
+            .stream()
+            .map(pemesananMapper::toPemesananResponse)
+            .collect(Collectors.toList());
+    }
+
     public List<PemesananResponse> getAllPemesanan() {
         return pemesananRepository.findAll()
             .stream()
