@@ -114,10 +114,10 @@
   </footer>
 
   <script>
-    // Ambil token dari localStorage (jika pakai auth)
+
     const token = localStorage.getItem("token");
 
-    // Fetch jadwal dari backend
+
     fetch("/api/schedules", {
       headers: token ? { Authorization: "Bearer " + token } : {}
     })
@@ -129,7 +129,7 @@
           return;
         }
         data.data.forEach(jadwal => {
-          // Sesuaikan field dengan JadwalResponse backend
+
           const rute = jadwal.rute || "-";
           const waktu = jadwal.waktuKeberangkatan ? jadwal.waktuKeberangkatan.substring(11,16) : "-";
           const tanggal = jadwal.tanggal ? jadwal.tanggal.substring(0,10) : "-";

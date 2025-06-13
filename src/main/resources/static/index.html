@@ -105,9 +105,9 @@
 
             if (response.ok) {
               const data = await response.json();
-              // Buat simpan statuas login
+
               localStorage.setItem("token", data.data);
-              // Ke halaman dummy untuk ngetes
+
               window.location.href = "dummy.html";
             } else {
               const errorData = await response.json();

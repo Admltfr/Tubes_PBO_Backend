@@ -96,12 +96,12 @@
   </div>
 
   <script>
-  // Get id from URL
+
   const params = new URLSearchParams(window.location.search);
   const id = parseInt(params.get('id'), 10);
   const token = localStorage.getItem('token');
 
-  // Fetch all kereta, then find the correct entry by id
+
   fetch('/api/trains', {
     headers: {
       'Accept': 'application/json',
@@ -128,7 +128,7 @@
     window.location.href = 'alisttrain.html';
   });
 
-  // Handle update
+
   document.getElementById('editBtn').addEventListener('click', function(e) {
     e.preventDefault();
     const asal = document.getElementById('asal').value.trim();

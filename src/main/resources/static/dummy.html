@@ -198,11 +198,11 @@
     </div>
 
     <script>
-      // Fungsi buat ngetes akses api pake token
+
     </script>
 
     <script>
-      // Redirect ke login klo misal tokennya gada
+
       const token = localStorage.getItem("token");
       if (!token) {
         window.location.href = "index.html";
@@ -215,7 +215,7 @@
           .then((response) => response.json())
           .then((data) => {
             console.log(data);
-            // TODO: render ke dalam .train-list
+
           })
           .catch((error) => {
             console.error("Gagal mengambil data:", error);

@@ -94,11 +94,11 @@
       <th>Edit</th>
       <th>Delete</th>
     </tr>
-    <!-- Data rows will be inserted here by JavaScript -->
+
   </table>
 
 <script>
-  // Get token from localStorage (adjust the key if you use a different one)
+
   const token = localStorage.getItem('token');
 
   fetch('/api/trains', {
@@ -116,21 +116,20 @@
     })
     .then(data => {
       let keretaList = data.data || [];
-      // Sort keretaList by id ascending
+
       keretaList = keretaList.sort((a, b) => a.id - b.id);
 
       const table = document.getElementById('kereta-table');
-      // Remove existing rows except header
+
       while (table.rows.length > 1) table.deleteRow(1);
 
       keretaList.forEach((kereta) => {
         const row = table.insertRow();
-        // Show real Kereta Id from database
+
         row.insertCell().innerText = kereta.id;
         row.insertCell().innerText = kereta.asal;
         row.insertCell().innerText = kereta.tujuan;
 
-        // Edit button
         const editCell = row.insertCell();
         const editBtn = document.createElement('button');
         editBtn.className = 'edit-btn';
@@ -140,7 +139,6 @@
         };
         editCell.appendChild(editBtn);
 
-        // Delete button (enabled)
         const deleteCell = row.insertCell();
         const deleteBtn = document.createElement('button');
         deleteBtn.className = 'delete-btn';

@@ -45,7 +45,7 @@
   </footer>
 
   <script>
-    // Ambil token jika pakai auth
+
     const token = localStorage.getItem("token");
 
     fetch("/api/pemesanan", {
@@ -59,7 +59,7 @@
           return;
         }
         data.data.forEach(pemesanan => {
-          // Ambil data dari response backend
+
           const jadwal = pemesanan.jadwal || {};
           const penumpang = pemesanan.penumpang || {};
           const rute = jadwal.rute || "-";
