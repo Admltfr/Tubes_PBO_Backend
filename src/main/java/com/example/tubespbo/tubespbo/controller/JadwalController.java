@@ -42,11 +42,11 @@ public class JadwalController {
         try {
             JadwalResponse jadwal = jadwalService.getJadwalById(id);
             ApiResponse<JadwalResponse> response = responseBuilder.ToApiResponse(HttpStatus.OK, "Berhasil mengambil data jadwal", jadwal);
-            return ResponseEntity.status(HttpStatus.OK).body(response);
+            return ResponseEntity.ok(response);
         } catch (ApiException ex) {
             throw ex;
-        }catch (Exception ex) {
-            throw new ApiException("Terjadi kesalahan dalam mengambil data jadwal");
+        } catch (Exception ex) {
+            throw new ApiException("Jadwal dengan ID " + id + " tidak ditemukan");
         }
     }
 

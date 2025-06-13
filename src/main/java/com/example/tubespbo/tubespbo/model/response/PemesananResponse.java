@@ -10,8 +10,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Builder
 public class PemesananResponse {
-    private double harga;
-    private String kelas;
     private JadwalResponse jadwal;  
     private UserResponse penumpang;
 }

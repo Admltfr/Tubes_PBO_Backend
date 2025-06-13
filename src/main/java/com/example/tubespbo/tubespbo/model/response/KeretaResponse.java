@@ -10,6 +10,8 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Builder
 public class KeretaResponse {
+    private Long id;
+
     private String asal;
 
     private String tujuan;

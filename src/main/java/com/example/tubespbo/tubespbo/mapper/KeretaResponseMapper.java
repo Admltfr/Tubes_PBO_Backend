@@ -17,15 +17,9 @@ public class KeretaResponseMapper {
 
     public KeretaResponse toKeretaResponse(KeretaEntity entity) {
         return KeretaResponse.builder()
+            .id(entity.getId())
             .asal(entity.getAsal())
             .tujuan(entity.getTujuan())
             .build();
     }
-
-    // public KeretaResponse toKeretaResponse2(Optional<KeretaEntity> kereta) {
-    //     return KeretaResponse.builder()
-    //         .asal(kereta.getAsal())
-    //         .tujuan(kereta.getTujuan())
-    //         .build();
-    // }
 }
