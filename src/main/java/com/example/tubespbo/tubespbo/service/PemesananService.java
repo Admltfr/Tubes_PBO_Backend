@@ -69,9 +69,6 @@ public class PemesananService {
         PemesananEntity pemesanan = new PemesananEntity();
         pemesanan.setPenumpang(penumpang);
         pemesanan.setJadwal(jadwal);
-        pemesanan.setKelas(request.getKelas());
-        pemesanan.setHarga
-        (request.getHarga());
 
         PemesananEntity saved = pemesananRepository.save(pemesanan);
 
@@ -114,9 +111,6 @@ public class PemesananService {
         PemesananEntity pemesanan = new PemesananEntity();
         pemesanan.setPenumpang(penumpang);
         pemesanan.setJadwal(jadwal);
-        pemesanan.setKelas(request.getKelas());
-        pemesanan.setHarga
-        (request.getHarga());
 
         PemesananEntity saved = pemesananRepository.save(pemesanan);
 

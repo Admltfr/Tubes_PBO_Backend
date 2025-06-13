@@ -18,8 +18,6 @@ public class PemesananMapper {
 
     public PemesananResponse toPemesananResponse(PemesananEntity pemesanan) {
         return PemesananResponse.builder()
-                .harga(pemesanan.getHarga())
-                .kelas(pemesanan.getKelas())
                 .jadwal(jadwalResponseMapper.toResponse(pemesanan.getJadwal()))
                 .penumpang(userMapper.ToPenumpangResponseMapper(pemesanan.getPenumpang()))
                 .build();
@@ -27,8 +25,6 @@ public class PemesananMapper {
 
     public PemesananRequest toPemesananRequest(PemesananRequest request) {
         return PemesananRequest.builder()
-                .harga(request.getHarga())
-                .kelas(request.getKelas())
                 .jadwalId(request.getJadwalId())
                 .penumpangId(request.getPenumpangId())
                 .build();
@@ -36,8 +32,6 @@ public class PemesananMapper {
 
     public PemesananEntity toPemesananEntity(PemesananEntity request) {
         return PemesananEntity.builder()
-                .harga(request.getHarga())
-                .kelas(request.getKelas())
                 .jadwal(request.getJadwal())
                 .penumpang(request.getPenumpang())
                 .build();

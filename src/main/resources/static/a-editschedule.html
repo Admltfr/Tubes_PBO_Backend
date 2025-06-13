@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Edit Schedule - Train-U</title>
+    <style>
+      body {
+        margin: 0;
+        font-family: Arial, sans-serif;
+        background-color: white;
+      }
+      .header {
+        background-color: #003366;
+        padding: 20px;
+        text-align: center;
+      }
+      .header img {
+        height: 50px;
+      }
+      .container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 30px 0;
+      }
+      .card {
+        background-color: #f5f5f5;
+        padding: 40px 30px;
+        border-radius: 10px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.15);
+        width: 400px;
+        text-align: center;
+      }
+      .card h2 {
+        color: #ff6600;
+        margin-bottom: 25px;
+      }
+      label {
+        display: block;
+        text-align: left;
+        margin: 10px 0 5px;
+        font-weight: bold;
+      }
+      input {
+        width: 100%;
+        padding: 10px;
+        border-radius: 5px;
+        border: 1px solid #ccc;
+        margin-bottom: 10px;
+      }
+      .btn {
+        background-color: #ff6600;
+        color: white;
+        padding: 10px;
+        width: 100%;
+        border: none;
+        border-radius: 5px;
+        font-weight: bold;
+        cursor: pointer;
+      }
+      .btn:hover {
+        background-color: #ff6600;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="header">
+      <img src="logo_trainu.png" alt="Train-U Logo" />
+    </div>
+    <div class="container">
+      <div class="card">
+        <h2>Edit Schedule</h2>
+        <form id="editScheduleForm">
+          <label>Jadwal Id</label>
+          <input type="text" id="jadwalIdInput" readonly />
+
+          <label>Kereta Id</label>
+          <input type="text" id="keretaId" required placeholder="..." />
+
+          <label>Waktu Keberangkatan</label>
+          <input
+            type="datetime-local"
+            id="waktuKeberangkatan"
+            required
+            placeholder="yyyy-MM-ddTHH:mm"
+          />
+
+          <label>Harga</label>
+          <input type="number" id="harga" required placeholder="..." min="0" />
+
+          <label>Kelas</label>
+          <input type="text" id="kelas" required placeholder="..." />
+
+          <label>Rute</label>
+          <input type="text" id="rute" required placeholder="..." />
+
+          <button class="btn" type="submit">UPDATE</button>
+        </form>
+        <div id="result" style="margin-top: 10px; color: green"></div>
+      </div>
+    </div>
+    <script>
+      function toDatetimeLocal(str) {
+        if (!str) return "";
+        // Untuk format "2025-06-12 22:29:00"
+        return str.replace(" ", "T").substring(0, 16);
+      }
+      // Ambil jadwalId dari query string (?id=...)
+      function getQueryParam(name) {
+        const urlParams = new URLSearchParams(window.location.search);
+        return urlParams.get(name);
+      }
+      const jadwalId = getQueryParam("id");
+      const token = localStorage.getItem("token");
+      if (!token) {
+        window.location.href = "index.html";
+      }
+
+      // Prefill form dengan data jadwal yang akan diedit
+      async function loadJadwal() {
+        if (!jadwalId) return;
+        const response = await fetch(`/api/schedules/${jadwalId}`, {
+          headers: { Authorization: "Bearer " + token },
+        });
+        const resultDiv = document.getElementById("result");
+        if (response.ok) {
+          const data = await response.json();
+          const jadwal = data.data;
+          document.getElementById("jadwalIdInput").value =
+            jadwal.id || jadwalId;
+          document.getElementById("keretaId").value = jadwal.keretaId;
+          document.getElementById("waktuKeberangkatan").value = toDatetimeLocal(
+            jadwal.waktuKeberangkatan
+          );
+          document.getElementById("rute").value = jadwal.rute
+            ? jadwal.rute.join(", ")
+            : "";
+          document.getElementById("harga").value = jadwal.harga || "";
+          document.getElementById("kelas").value = jadwal.kelas || "";
+        } else {
+          resultDiv.textContent = "Gagal memuat data jadwal!";
+          resultDiv.style.color = "red";
+        }
+      }
+      loadJadwal();
+
+      // Submit form update
+      document
+        .getElementById("editScheduleForm")
+        .addEventListener("submit", async function (e) {
+          e.preventDefault();
+          const resultDiv = document.getElementById("result");
+          const keretaId = parseInt(document.getElementById("keretaId").value);
+          const waktuKeberangkatanInput =
+            document.getElementById("waktuKeberangkatan").value; // yyyy-MM-ddTHH:mm
+          const rute = document.getElementById("rute").value;
+
+          if (!keretaId || !waktuKeberangkatanInput || !rute) {
+            resultDiv.textContent = "Semua field wajib diisi!";
+            resultDiv.style.color = "red";
+            return;
+          }
+
+          // Ubah ke format "yyyy-MM-dd HH:mm:ss"
+          const waktuKeberangkatan =
+            waktuKeberangkatanInput.replace("T", " ") + ":00";
+
+          const data = {
+            keretaId: parseInt(document.getElementById("keretaId").value),
+            waktuKeberangkatan: waktuKeberangkatan,
+            rute: document
+              .getElementById("rute")
+              .value.split(",")
+              .map((s) => s.trim())
+              .filter((s) => s.length > 0),
+            harga: parseFloat(document.getElementById("harga").value),
+            kelas: document.getElementById("kelas").value,
+          };
+
+          const response = await fetch(`/api/schedules/update/${jadwalId}`, {
+            method: "PUT",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: "Bearer " + token,
+            },
+            body: JSON.stringify(data),
+          });
+
+          if (response.ok) {
+            resultDiv.textContent = "Jadwal berhasil diupdate!";
+            resultDiv.style.color = "green";
+            setTimeout(
+              () => (window.location.href = "a-listschedule.html"),
+              1500
+            );
+          } else {
+            const res = await response.json().catch(() => ({}));
+            resultDiv.textContent = res.message || "Gagal mengupdate jadwal!";
+            resultDiv.style.color = "red";
+          }
+        });
+    </script>
+  </body>
+</html>

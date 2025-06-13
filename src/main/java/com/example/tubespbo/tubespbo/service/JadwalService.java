@@ -43,10 +43,11 @@ public class JadwalService {
         KeretaEntity kereta = optionalKereta.get();
 
         JadwalEntity jadwal = JadwalEntity.builder()
-                .tanggal(req.getTanggal())
                 .waktuKeberangkatan(req.getWaktuKeberangkatan())
                 .rute(req.getRute())
                 .kereta(kereta)
+                .harga(req.getHarga())
+                .kelas(req.getKelas())
                 .build();
 
         JadwalEntity saved = jadwalRepository.save(jadwal);
@@ -83,10 +84,11 @@ public class JadwalService {
         }
         KeretaEntity kereta = optionalKereta.get();
 
-        jadwal.setTanggal(req.getTanggal());
         jadwal.setWaktuKeberangkatan(req.getWaktuKeberangkatan());
         jadwal.setRute(req.getRute());
         jadwal.setKereta(kereta);
+        jadwal.setHarga(req.getHarga());
+        jadwal.setKelas(req.getKelas());
 
         JadwalEntity updated = jadwalRepository.save(jadwal);
         return jadwalResponseMapper.toResponse(updated);
