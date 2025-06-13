@@ -14,7 +14,6 @@ import lombok.NoArgsConstructor;
 @Builder
 public class JadwalResponse {
     private Long id;
-    private Date tanggal;
     private Date waktuKeberangkatan;
     private List<String> rute;
     private Long keretaId;
