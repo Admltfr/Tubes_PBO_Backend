@@ -86,8 +86,7 @@
   <h2>Setting Train Admin</h2>
 
   <button class="add-btn" onclick="window.location.href='aaddtrain.html'">ADD TRAIN</button>
-
-  <table>
+  <table id="kereta-table">
     <tr>
       <th>Kereta Id</th>
       <th>Asal</th>
@@ -95,23 +94,87 @@
       <th>Edit</th>
       <th>Delete</th>
     </tr>
-    <tr>
-      <td>1</td>
-      <td>Aceh</td>
-      <td>Papua</td>
-      <td><button class="edit-btn" onclick="window.location.href='aedittrain.html?id=1'">EDIT</button></td>
-      <td><button class="delete-btn">DELETE</button></td>
-    </tr>
-    <tr>
-      <td>2</td>
-      <td>Bandung</td>
-      <td>Makassar</td>
-      <td><button class="edit-btn" onclick="window.location.href='aedittrain.html?id=2'">EDIT</button></td>
-      <td><button class="delete-btn">DELETE</button></td>
-    </tr>
+    <!-- Data rows will be inserted here by JavaScript -->
   </table>
 
-  
+<script>
+  // Get token from localStorage (adjust the key if you use a different one)
+  const token = localStorage.getItem('token');
 
+  fetch('/api/trains', {
+    headers: {
+      'Accept': 'application/json',
+      'Authorization': 'Bearer ' + token
+    }
+  })
+    .then(response => {
+      const contentType = response.headers.get('content-type');
+      if (!contentType || !contentType.includes('application/json')) {
+        throw new Error('Server did not return JSON. Status: ' + response.status);
+      }
+      return response.json();
+    })
+    .then(data => {
+      let keretaList = data.data || [];
+      // Sort keretaList by id ascending
+      keretaList = keretaList.sort((a, b) => a.id - b.id);
+
+      const table = document.getElementById('kereta-table');
+      // Remove existing rows except header
+      while (table.rows.length > 1) table.deleteRow(1);
+
+      keretaList.forEach((kereta) => {
+        const row = table.insertRow();
+        // Show real Kereta Id from database
+        row.insertCell().innerText = kereta.id;
+        row.insertCell().innerText = kereta.asal;
+        row.insertCell().innerText = kereta.tujuan;
+
+        // Edit button
+        const editCell = row.insertCell();
+        const editBtn = document.createElement('button');
+        editBtn.className = 'edit-btn';
+        editBtn.innerText = 'EDIT';
+        editBtn.onclick = function() {
+          window.location.href = `aedittrain.html?id=${kereta.id}`;
+        };
+        editCell.appendChild(editBtn);
+
+        // Delete button (enabled)
+        const deleteCell = row.insertCell();
+        const deleteBtn = document.createElement('button');
+        deleteBtn.className = 'delete-btn';
+        deleteBtn.innerText = 'DELETE';
+        deleteBtn.onclick = function() {
+          if (confirm('Yakin ingin menghapus kereta ini?')) {
+            fetch(`/api/trains/delete/${kereta.id}`, {
+              method: 'DELETE',
+              headers: {
+                'Accept': 'application/json',
+                'Authorization': 'Bearer ' + token
+              }
+            })
+            .then(response => {
+              if (!response.ok) {
+                return response.json().then(err => { throw new Error(err.message || 'Gagal menghapus kereta'); });
+              }
+              return response.json();
+            })
+            .then(() => {
+              alert('Kereta berhasil dihapus!');
+              window.location.reload();
+            })
+            .catch(err => {
+              alert('Gagal menghapus kereta: ' + err.message);
+            });
+          }
+        };
+        deleteCell.appendChild(deleteBtn);
+      });
+    })
+    .catch((err) => {
+      alert('Gagal mengambil data kereta: ' + (err.message || err));
+    });
+</script>
 </body>
 </html>

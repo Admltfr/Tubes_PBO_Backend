@@ -82,18 +82,59 @@
     <div class="card">
       <h2>Add Train</h2>
 
-      <label>Kereta Id</label>
-      <input type="text" placeholder="...">
+      <!-- Removed Kereta Id input -->
 
       <label>Asal</label>
-      <input type="text" placeholder="...">
+      <input type="text" id="asal" placeholder="Masukkan asal kereta">
 
       <label>Tujuan</label>
-      <input type="text" placeholder="...">
+      <input type="text" id="tujuan" placeholder="Masukkan tujuan kereta">
 
-      <button class="btn">ADD</button>
+      <button class="btn" id="addBtn">ADD</button>
     </div>
   </div>
 
+  <script>
+    document.getElementById('addBtn').addEventListener('click', function(e) {
+      e.preventDefault();
+
+      const asal = document.getElementById('asal').value.trim();
+      const tujuan = document.getElementById('tujuan').value.trim();
+
+      if (!asal || !tujuan) {
+        alert('Asal dan Tujuan harus diisi!');
+        return;
+      }
+
+      const token = localStorage.getItem('token');
+      if (!token) {
+        alert('Anda belum login sebagai admin!');
+        return;
+      }
+
+      fetch('/api/trains/add', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+          'Authorization': 'Bearer ' + token
+        },
+        body: JSON.stringify({ asal, tujuan })
+      })
+      .then(response => {
+        if (!response.ok) {
+          return response.json().then(err => { throw new Error(err.message || 'Gagal menambah kereta'); });
+        }
+        return response.json();
+      })
+      .then(data => {
+        alert('Kereta berhasil ditambahkan!');
+        window.location.href = 'alisttrain.html';
+      })
+      .catch(err => {
+        alert('Gagal menambah kereta: ' + err.message);
+      });
+    });
+  </script>
 </body>
 </html>
