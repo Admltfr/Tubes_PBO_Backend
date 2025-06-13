@@ -114,7 +114,7 @@
     const kereta = keretaList.find(k => k.id === id);
     if (!kereta) {
       alert('Data kereta tidak ditemukan!');
-      window.location.href = 'alisttrain.html';
+      window.location.href = 'a-listtrain.html';
       return;
     }
     document.getElementById('keretaId').value = kereta.id;
@@ -125,7 +125,7 @@
   })
   .catch(() => {
     alert('Gagal mengambil data kereta!');
-    window.location.href = 'alisttrain.html';
+    window.location.href = 'a-listtrain.html';
   });
 
   // Handle update
@@ -156,7 +156,7 @@
     })
     .then(() => {
       alert('Kereta berhasil diupdate!');
-      window.location.href = 'alisttrain.html';
+      window.location.href = 'a-listtrain.html';
     })
     .catch(err => {
       alert('Gagal update kereta: ' + err.message);
