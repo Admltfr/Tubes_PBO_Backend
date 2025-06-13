@@ -13,6 +13,6 @@ public class PemesananResponse {
     private double harga;
     private String kelas;
     private JadwalResponse jadwal;  
-    private PenumpangResponse penumpang;
+    private UserResponse penumpang;
 }
 

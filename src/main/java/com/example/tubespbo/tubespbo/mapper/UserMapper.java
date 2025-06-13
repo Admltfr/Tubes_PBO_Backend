@@ -10,17 +10,15 @@ import com.example.tubespbo.tubespbo.model.response.PenumpangResponse;
 @Component
 public class UserMapper {
     public UserResponse ToUserResponseMapper(UserEntity user) {
+        String nomorTelepon = null;
+        if (user instanceof PenumpangEntity) {
+            nomorTelepon = ((PenumpangEntity) user).getNomorTelepon();
+        }
         return UserResponse.builder()
+                    .id(user.getId())
                     .username(user.getUsername())
                     .email(user.getEmail())
-                    .build();
-    }
-
-    public PenumpangResponse ToPenumpangResponseMapper(PenumpangEntity penumpang) {
-        return PenumpangResponse.builder()
-                    .username(penumpang.getUsername())
-                    .email(penumpang.getEmail())
-                    .nomorTelepon(penumpang.getNomorTelepon())
+                    .nomorTelepon(nomorTelepon)
                     .build();
     }
 }

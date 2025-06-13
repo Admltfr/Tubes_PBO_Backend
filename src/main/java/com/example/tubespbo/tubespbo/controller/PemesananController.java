@@ -37,6 +37,22 @@ public class PemesananController {
     @Autowired
     private ApiResponseMapper responseBuilder;
 
+    @GetMapping("/riwayat/{id}")
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<ApiResponse<List<PemesananResponse>>> getPemesananByPenumpangId(@PathVariable Long id) {
+        try {
+            List<PemesananResponse> pemesananList = pemesananService.getPemesananByPenumpangId(id);
+            ApiResponse<List<PemesananResponse>> response = responseBuilder.ToApiResponse(HttpStatus.OK, "Berhasil mengambil data pemesanan", pemesananList);
+            return ResponseEntity.ok(response);
+        } catch (ApiException ex) {
+            throw ex;
+        } catch (Exception ex) {
+            throw new ApiException("Gagal mengambil data pemesanan untuk penumpang dengan ID " + id);
+        }
+    }
+
+
+
     @GetMapping
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<ApiResponse<List<PemesananResponse>>> getAllPemesanan() {

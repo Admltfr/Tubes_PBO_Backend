@@ -21,7 +21,7 @@ public class PemesananMapper {
                 .harga(pemesanan.getHarga())
                 .kelas(pemesanan.getKelas())
                 .jadwal(jadwalResponseMapper.toResponse(pemesanan.getJadwal()))
-                .penumpang(userMapper.ToPenumpangResponseMapper(pemesanan.getPenumpang()))
+                .penumpang(userMapper.ToUserResponseMapper(pemesanan.getPenumpang()))
                 .build();
     }
 
