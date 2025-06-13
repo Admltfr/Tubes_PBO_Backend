@@ -32,6 +32,10 @@ public class JadwalEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    private double harga;
+
+    private String kelas;
+
     @Temporal(TemporalType.TIMESTAMP)
     @Column(nullable = false)
     private Date waktuKeberangkatan;

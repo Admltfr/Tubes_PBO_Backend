@@ -46,6 +46,8 @@ public class JadwalService {
                 .waktuKeberangkatan(req.getWaktuKeberangkatan())
                 .rute(req.getRute())
                 .kereta(kereta)
+                .harga(req.getHarga())
+                .kelas(req.getKelas())
                 .build();
 
         JadwalEntity saved = jadwalRepository.save(jadwal);
@@ -85,6 +87,8 @@ public class JadwalService {
         jadwal.setWaktuKeberangkatan(req.getWaktuKeberangkatan());
         jadwal.setRute(req.getRute());
         jadwal.setKereta(kereta);
+        jadwal.setHarga(req.getHarga());
+        jadwal.setKelas(req.getKelas());
 
         JadwalEntity updated = jadwalRepository.save(jadwal);
         return jadwalResponseMapper.toResponse(updated);

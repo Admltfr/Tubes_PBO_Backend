@@ -93,6 +93,8 @@
             <th>Kereta Id</th>
             <th>Waktu Keberangkatan</th>
             <th>Rute</th>
+            <th>Harga</th>
+            <th>Kelas</th>
             <th>Edit</th>
             <th>Delete</th>
           </tr>
@@ -152,6 +154,8 @@
             <td>${jadwal.keretaId}</td>
             <td>${formatDatetime(jadwal.waktuKeberangkatan)}</td>
             <td>${jadwal.rute ? jadwal.rute.join(", ") : ""}</td>
+            <td>${jadwal.harga}</td>
+            <td>${jadwal.kelas}</td>
             <td><button class="btn-edit" onclick="editJadwal(${
               jadwal.id
             })">EDIT</button></td>

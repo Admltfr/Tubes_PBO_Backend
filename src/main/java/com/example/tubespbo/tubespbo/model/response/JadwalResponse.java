@@ -1,12 +1,12 @@
 package com.example.tubespbo.tubespbo.model.response;
 
+import java.util.Date;
+import java.util.List;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
-import java.util.Date;
-import java.util.List;
 
 @Data
 @NoArgsConstructor
@@ -18,4 +18,6 @@ public class JadwalResponse {
     private Date waktuKeberangkatan;
     private List<String> rute;
     private Long keretaId;
+    private double harga;
+    private String kelas;
 }

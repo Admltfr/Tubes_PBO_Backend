@@ -85,6 +85,12 @@
             placeholder="yyyy-MM-ddTHH:mm"
           />
 
+          <label>Harga</label>
+          <input type="number" id="harga" required placeholder="..." min="0" />
+
+          <label>Kelas</label>
+          <input type="text" id="kelas" required placeholder="..." />
+
           <label>Rute</label>
           <input type="text" id="rute" required placeholder="..." />
 
@@ -129,6 +135,8 @@
           document.getElementById("rute").value = jadwal.rute
             ? jadwal.rute.join(", ")
             : "";
+          document.getElementById("harga").value = jadwal.harga || "";
+          document.getElementById("kelas").value = jadwal.kelas || "";
         } else {
           resultDiv.textContent = "Gagal memuat data jadwal!";
           resultDiv.style.color = "red";
@@ -158,12 +166,15 @@
             waktuKeberangkatanInput.replace("T", " ") + ":00";
 
           const data = {
-            keretaId: keretaId,
+            keretaId: parseInt(document.getElementById("keretaId").value),
             waktuKeberangkatan: waktuKeberangkatan,
-            rute: rute
-              .split(",")
+            rute: document
+              .getElementById("rute")
+              .value.split(",")
               .map((s) => s.trim())
               .filter((s) => s.length > 0),
+            harga: parseFloat(document.getElementById("harga").value),
+            kelas: document.getElementById("kelas").value,
           };
 
           const response = await fetch(`/api/schedules/update/${jadwalId}`, {

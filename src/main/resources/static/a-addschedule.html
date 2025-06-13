@@ -91,6 +91,11 @@
             required
             placeholder="yyyy-MM-ddTHH:mm:ss"
           />
+          <label>Harga</label>
+          <input type="number" id="harga" required placeholder="..." min="0" />
+
+          <label>Kelas</label>
+          <input type="text" id="kelas" required placeholder="..." />
 
           <label>Rute</label>
           <input type="text" id="rute" required placeholder="..." />
@@ -107,28 +112,26 @@
         .addEventListener("submit", async function (e) {
           e.preventDefault();
 
-          function toIso8601WithTZ(val) {
-            if (!val) return null;
-            let withSeconds = val.length === 16 ? val + ":00" : val;
-            // Format: yyyy-MM-ddTHH:mm:ssZ
-            return withSeconds + "Z";
-          }
+          // Ambil value dari input datetime-local, ubah ke "yyyy-MM-dd HH:mm:ss"
+          const waktuKeberangkatanInput =
+            document.getElementById("waktuKeberangkatan").value; // yyyy-MM-ddTHH:mm
+          const waktuKeberangkatan =
+            waktuKeberangkatanInput.replace("T", " ") + ":00";
 
           const data = {
             keretaId: parseInt(document.getElementById("keretaId").value),
-            waktuKeberangkatan: toIso8601WithTZ(
-              document.getElementById("waktuKeberangkatan").value
-            ),
+            waktuKeberangkatan: waktuKeberangkatan,
             rute: document
               .getElementById("rute")
               .value.split(",")
               .map((s) => s.trim())
               .filter((s) => s.length > 0),
+            harga: parseFloat(document.getElementById("harga").value),
+            kelas: document.getElementById("kelas").value,
           };
 
           const token = localStorage.getItem("token");
           const response = await fetch("/api/schedules/add", {
-            // <-- perbaiki endpoint
             method: "POST",
             headers: {
               "Content-Type": "application/json",

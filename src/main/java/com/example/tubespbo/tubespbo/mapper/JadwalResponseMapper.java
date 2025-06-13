@@ -16,11 +16,13 @@ public class JadwalResponseMapper {
             return null;
         }
         return JadwalResponse.builder()
-                .id(entity.getId())
-                .waktuKeberangkatan(entity.getWaktuKeberangkatan())
-                .rute(entity.getRute())
-                .keretaId(entity.getKereta() != null ? entity.getKereta().getId() : null)
-                .build();
+            .id(entity.getId())
+            .waktuKeberangkatan(entity.getWaktuKeberangkatan())
+            .rute(entity.getRute())
+            .keretaId(entity.getKereta() != null ? entity.getKereta().getId() : null)
+            .harga(entity.getHarga())
+            .kelas(entity.getKelas())
+            .build();
     }
 
     public List<JadwalResponse> toResponseList(List<JadwalEntity> entities) {
