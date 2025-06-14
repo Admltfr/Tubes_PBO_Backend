@@ -20,6 +20,7 @@ import com.example.tubespbo.tubespbo.mapper.ApiResponseMapper;
 import com.example.tubespbo.tubespbo.model.request.JadwalRequest;
 import com.example.tubespbo.tubespbo.model.response.ApiResponse;
 import com.example.tubespbo.tubespbo.model.response.JadwalResponse;
+import com.example.tubespbo.tubespbo.model.response.KeretaResponse;
 import com.example.tubespbo.tubespbo.service.JadwalService;
 
 import jakarta.validation.Valid;
@@ -78,20 +79,6 @@ public class JadwalController {
         }
     }
 
-    @DeleteMapping("/delete/{id}")
-    @PreAuthorize("hasAuthority('ADMIN')")
-    public ResponseEntity<ApiResponse<Void>> deleteJadwal(@PathVariable Long id) {
-        try {
-            jadwalService.deleteJadwal(id);
-            ApiResponse<Void> response =  responseBuilder.ToApiResponse(HttpStatus.OK, "Berhasil menghapus jadwal dengan ID: "+ id, null );
-            return ResponseEntity.ok(response);
-        }catch (ApiException ex) {
-            throw ex;
-        }catch (Exception ex) {
-            throw new ApiException("Terjadi kesalahan dalam menghapus jadwal");
-        }
-    }
-
     @PutMapping("/update/{id}")
     @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<ApiResponse<JadwalResponse>> updateJadwal(@PathVariable Long id, @RequestBody @Valid JadwalRequest req) {
@@ -103,6 +90,20 @@ public class JadwalController {
             throw ex;
         }catch (Exception ex) {
             throw new ApiException("Terjadi kesalahan dalam mengupdate jadwal");
+        }
+    }
+
+    @DeleteMapping("/delete/{id}")
+    @PreAuthorize("hasAuthority('ADMIN')")
+    public ResponseEntity<ApiResponse<JadwalResponse>> deleteJadwal(@PathVariable Long id) {
+        try {
+            JadwalResponse result = jadwalService.deleteJadwal(id);
+            ApiResponse<JadwalResponse> response = responseBuilder.ToApiResponse(HttpStatus.OK, "Berhasil menghapus data kereta", result);
+            return ResponseEntity.ok(response);
+        } catch (ApiException ex) {
+            throw ex; 
+        } catch (Exception ex) {
+            throw new ApiException("Terjadi kesalahan saat menghapus data jadwal");
         }
     }
 }
