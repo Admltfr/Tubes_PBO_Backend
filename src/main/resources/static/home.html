@@ -9,11 +9,14 @@
         margin: 0;
         font-family: Arial, sans-serif;
         background: #f5f5f5;
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
       }
       header {
-        text-align: center;
-        padding: 30px;
         background-color: #003366;
+        text-align: center;
+        padding: 30px 0 20px 0;
       }
       header img {
         width: 120px;
@@ -21,88 +24,58 @@
       h2 {
         text-align: center;
         color: #d87c2a;
-        margin: 20px 0;
+        margin: 20px 0 10px 0;
       }
-      .search-bar {
+      .filter-bar {
+        display: flex;
+        align-items: flex-end;
+        gap: 18px;
         background: #fff;
         border-radius: 10px;
-        padding: 10px 18px;
-        display: flex;
-        align-items: center;
-        gap: 10px;
+        padding: 18px 24px;
+        margin: 0 auto 20px auto;
+        max-width: 800px;
         box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
-        max-width: 750px;
-        margin: 20px auto 0 auto;
-        font-size: 1.6em;
       }
-      .search-input {
-        border: none;
-        background: transparent;
-        font-size: 1em;
-        font-weight: 500;
-        width: 90px;
-        outline: none;
-        color: #222;
-      }
-      .search-input::placeholder {
-        color: #222;
-        opacity: 1;
-        font-weight: 500;
-      }
-      .dot-sep {
-        color: #f37021;
-        font-size: 1.1em;
-        letter-spacing: 2px;
-        margin: 0 2px;
-        font-weight: bold;
-      }
-      .date-group {
+      .filter-group {
         display: flex;
-        align-items: center;
-        gap: 6px;
-        position: relative;
+        flex-direction: column;
+        flex: 1;
+        min-width: 120px;
       }
-      .fa-calendar-days {
-        font-size: 1em;
-        color: #111;
-        margin-right: 2px;
-        cursor: pointer;
+      .filter-label {
+        font-weight: bold;
+        color: #003366;
+        margin-bottom: 4px;
       }
-      .date-input {
-        opacity: 0;
-        position: absolute;
-        left: 0;
-        width: 120px;
-        cursor: pointer;
-        height: 100%;
+      .filter-input {
+        padding: 8px 12px;
+        border: 1px solid #ccc;
+        border-radius: 6px;
+        font-size: 15px;
+        width: 100%;
+        box-sizing: border-box;
       }
-      .date-label {
-        color: #f37021;
-        font-size: 0.95em;
-        font-weight: 500;
-        margin-left: 28px;
-        margin-right: 6px;
-        min-width: 140px;
-        cursor: pointer;
-        user-select: none;
-      }
-      .search-btn {
-        background: transparent;
+      .filter-btn {
+        background: #003366;
+        color: #fff;
         border: none;
+        border-radius: 6px;
+        padding: 10px 22px;
+        font-size: 1.1em;
+        font-weight: bold;
         cursor: pointer;
-        font-size: 1em;
-        margin-left: 4px;
-        color: #222;
-        outline: none;
-        transition: color 0.2s;
+        margin-left: 8px;
       }
-      .search-btn:hover {
-        color: #f37021;
+      .filter-btn i {
+        margin-right: 6px;
       }
       .schedule-list {
         max-width: 800px;
-        margin: 30px auto 0 auto;
-        padding-bottom: 90px;
+        margin: 0 auto;
+        padding: 0 0 90px 0;
+        flex: 1;
+        width: 100%;
       }
       .schedule-card {
         background: #fff;
@@ -113,6 +86,10 @@
         display: flex;
         flex-direction: column;
         gap: 10px;
+        width: 100%;
+        box-sizing: border-box;
+        margin-left: 0;
+        margin-right: 0;
       }
       .schedule-title {
         font-size: 1.3em;
@@ -193,23 +170,13 @@
         color: #ff9900;
       }
       @media (max-width: 600px) {
-        .schedule-list {
-          max-width: 99vw;
-        }
-        .schedule-card {
+        .filter-bar {
+          flex-direction: column;
+          gap: 10px;
           padding: 10px 4vw;
         }
         .footer {
           gap: 20px;
-        }
-        .search-bar {
-          font-size: 1em;
-          padding: 8px 4px;
-          gap: 4px;
-        }
-        .date-label {
-          min-width: 90px;
-          margin-left: 22px;
         }
       }
     </style>
@@ -223,44 +190,111 @@
       <img src="assets/logo_trainu.png" alt="Train-U Logo" />
     </header>
 
-    <div class="search-bar">
-      <input
-        type="text"
-        id="asal"
-        placeholder=""
-        class="search-input"
-        autocomplete="off"
-        aria-label="Asal"
-      />
-      <span class="dot-sep">.....</span>
-      <input
-        type="text"
-        id="tujuan"
-        placeholder=""
-        class="search-input"
-        autocomplete="off"
-        aria-label="Tujuan"
-      />
-      <span class="dot-sep">.....</span>
-      <span class="date-group">
-        <i
-          class="fa-solid fa-calendar-days"
-          id="calendar-icon"
-          style="cursor: pointer"
-        ></i>
-        <input type="date" id="date" class="date-input" tabindex="-1" />
-        <span id="date-label" class="date-label">20 - april - 2045</span>
-      </span>
-      <button class="search-btn" id="search-btn" title="Cari">
-        <i class="fa-solid fa-magnifying-glass"></i>
+    <h2>Jadwal Kereta Hari Ini</h2>
+
+    <!-- Filter Bar -->
+    <div
+      class="filter-bar"
+      style="
+        display: flex;
+        align-items: flex-end;
+        gap: 18px;
+        background: #fff;
+        border-radius: 10px;
+        padding: 18px 24px;
+        margin: 0 auto 20px auto;
+        max-width: 800px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+      "
+    >
+      <div
+        style="display: flex; flex-direction: column; flex: 1; min-width: 120px"
+      >
+        <label
+          for="asalInput"
+          class="filter-label"
+          style="font-weight: bold; color: #003366; margin-bottom: 4px"
+          >Isi Asal</label
+        >
+        <input
+          type="text"
+          id="asalInput"
+          class="filter-input"
+          placeholder="Kota asal"
+          style="
+            width: 100%;
+            padding: 8px 12px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            font-size: 15px;
+          "
+        />
+      </div>
+      <div
+        style="display: flex; flex-direction: column; flex: 1; min-width: 120px"
+      >
+        <label
+          for="tujuanInput"
+          class="filter-label"
+          style="font-weight: bold; color: #003366; margin-bottom: 4px"
+          >Isi Tujuan</label
+        >
+        <input
+          type="text"
+          id="tujuanInput"
+          class="filter-input"
+          placeholder="Kota tujuan"
+          style="
+            width: 100%;
+            padding: 8px 12px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            font-size: 15px;
+          "
+        />
+      </div>
+      <div
+        style="display: flex; flex-direction: column; flex: 1; min-width: 140px"
+      >
+        <label
+          for="dateInput"
+          class="filter-label"
+          style="font-weight: bold; color: #003366; margin-bottom: 4px"
+          >Tanggal</label
+        >
+        <input
+          type="date"
+          id="dateInput"
+          class="filter-input"
+          style="
+            width: 100%;
+            padding: 8px 12px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            font-size: 15px;
+          "
+        />
+      </div>
+      <button
+        id="filterBtn"
+        class="filter-btn"
+        style="
+          background: #003366;
+          color: #fff;
+          border: none;
+          border-radius: 6px;
+          padding: 10px 22px;
+          font-size: 1.1em;
+          font-weight: bold;
+          cursor: pointer;
+          margin-left: 8px;
+        "
+      >
+        <i class="fa-solid fa-magnifying-glass"></i> Cari
       </button>
     </div>
 
-    <h2>Jadwal Kereta Hari Ini</h2>
-
-    <div class="schedule-list" id="scheduleList">
-      <!-- Jadwal kereta akan dimuat di sini -->
-    </div>
+    <div class="schedule-list" id="scheduleList"></div>
 
     <div class="footer">
       <a href="history.html"><i class="fa-solid fa-clock-rotate-left"></i></a>
@@ -269,56 +303,10 @@
     </div>
 
     <script>
-      function formatTanggalIndo(dateStr) {
-        if (!dateStr) return "";
-        const bulan = [
-          "januari",
-          "februari",
-          "maret",
-          "april",
-          "mei",
-          "juni",
-          "juli",
-          "agustus",
-          "september",
-          "oktober",
-          "november",
-          "desember",
-        ];
-        const d = new Date(dateStr);
-        if (isNaN(d)) return "";
-        return (
-          String(d.getDate()).padStart(2, "0") +
-          " - " +
-          bulan[d.getMonth()] +
-          " - " +
-          d.getFullYear()
-        );
-      }
-
-      const dateInput = document.getElementById("date");
-      const dateLabel = document.getElementById("date-label");
-      const calendarIcon = document.getElementById("calendar-icon");
-      const today = new Date();
-      dateInput.value = today.toISOString().slice(0, 10);
-      dateLabel.textContent = formatTanggalIndo(dateInput.value);
-
-      dateInput.addEventListener("input", function () {
-        dateLabel.textContent = formatTanggalIndo(this.value);
-      });
-
-      // Klik label tanggal atau ikon kalender = buka date picker
-      dateLabel.addEventListener("click", function () {
-        dateInput.showPicker ? dateInput.showPicker() : dateInput.click();
-      });
-      calendarIcon.addEventListener("click", function () {
-        dateInput.showPicker ? dateInput.showPicker() : dateInput.click();
-      });
-
-      // --- Jadwal Kereta ---
       const token = localStorage.getItem("token");
       let allSchedules = [];
 
+      // Fetch jadwal dari backend
       fetch("/api/schedules", {
         headers: token ? { Authorization: "Bearer " + token } : {},
       })
@@ -341,6 +329,7 @@
         const scheduleList = document.getElementById("scheduleList");
         scheduleList.innerHTML = "";
         [...schedules].reverse().forEach((jadwal) => {
+          // rute bisa array atau string, handle keduanya
           let rute = "-";
           let asal = "-";
           let tujuan = "-";
@@ -354,6 +343,7 @@
             tujuan = rute.split("-")[1]?.trim() || "-";
           }
 
+          // Format jam keberangkatan dan tiba
           let waktu = "-";
           let waktuTiba = "-";
           let tanggal = "-";
@@ -365,16 +355,19 @@
               month: "long",
               year: "numeric",
             });
+            // waktu tiba = waktu keberangkatan + 2 jam
             const tiba = new Date(d.getTime() + 2 * 60 * 60 * 1000);
             waktuTiba = tiba.toTimeString().substring(0, 5);
           }
 
+          // Kelas dan harga
           const kelas = jadwal.kelas || "-";
           const harga =
             jadwal.harga !== undefined
               ? "IDR " + Number(jadwal.harga).toLocaleString("id-ID")
               : "-";
 
+          // Nama kereta (hanya tampilkan ID, jika ingin nama fetch lagi ke /api/trains/{id})
           const namaKereta = "Kereta ID: " + (jadwal.keretaId || "-");
 
           const card = document.createElement("div");
@@ -401,6 +394,65 @@
         });
       }
 
+      // Filter logic
+      document.getElementById("filterBtn").onclick = function () {
+        const asal = document
+          .getElementById("asalInput")
+          .value.trim()
+          .toLowerCase();
+        const tujuan = document
+          .getElementById("tujuanInput")
+          .value.trim()
+          .toLowerCase();
+        const date = document.getElementById("dateInput").value;
+        let filtered = allSchedules;
+
+        // Filter asal (jika diisi)
+        if (asal) {
+          filtered = filtered.filter((jadwal) => {
+            if (Array.isArray(jadwal.rute)) {
+              return (jadwal.rute[0] || "").toLowerCase().includes(asal);
+            } else if (typeof jadwal.rute === "string") {
+              return jadwal.rute
+                .split("-")[0]
+                ?.trim()
+                .toLowerCase()
+                .includes(asal);
+            }
+            return false;
+          });
+        }
+
+        // Filter tujuan (jika diisi)
+        if (tujuan) {
+          filtered = filtered.filter((jadwal) => {
+            if (Array.isArray(jadwal.rute)) {
+              return (jadwal.rute[jadwal.rute.length - 1] || "")
+                .toLowerCase()
+                .includes(tujuan);
+            } else if (typeof jadwal.rute === "string") {
+              const parts = jadwal.rute.split("-");
+              return parts[parts.length - 1]
+                ?.trim()
+                .toLowerCase()
+                .includes(tujuan);
+            }
+            return false;
+          });
+        }
+
+        // Filter tanggal (jika diisi)
+        if (date) {
+          filtered = filtered.filter((jadwal) => {
+            if (!jadwal.waktuKeberangkatan) return false;
+            // Format yyyy-mm-dd
+            return jadwal.waktuKeberangkatan.slice(0, 10) === date;
+          });
+        }
+
+        renderSchedules(filtered);
+      };
+
       // Event delegation untuk tombol Pesan
       document
         .getElementById("scheduleList")
@@ -412,45 +464,6 @@
               "ticketconfirmation.html?jadwalId=" + jadwalId;
           }
         });
-
-      document.getElementById("search-btn").onclick = function () {
-        const asal = document.getElementById("asal").value.trim().toLowerCase();
-        const tujuan = document
-          .getElementById("tujuan")
-          .value.trim()
-          .toLowerCase();
-        const date = document.getElementById("date").value;
-        let filtered = allSchedules;
-
-        if (asal) {
-          filtered = filtered.filter((jadwal) => {
-            if (Array.isArray(jadwal.rute)) {
-              // Cek semua elemen rute, bukan hanya yang pertama
-              return jadwal.rute.some((r) => r.toLowerCase().includes(asal));
-            } else if (typeof jadwal.rute === "string") {
-              return jadwal.rute.toLowerCase().includes(asal);
-            }
-            return false;
-          });
-        }
-        if (tujuan) {
-          filtered = filtered.filter((jadwal) => {
-            if (Array.isArray(jadwal.rute)) {
-              return jadwal.rute.some((r) => r.toLowerCase().includes(tujuan));
-            } else if (typeof jadwal.rute === "string") {
-              return jadwal.rute.toLowerCase().includes(tujuan);
-            }
-            return false;
-          });
-        }
-        if (date) {
-          filtered = filtered.filter((jadwal) => {
-            if (!jadwal.waktuKeberangkatan) return false;
-            return jadwal.waktuKeberangkatan.slice(0, 10) === date;
-          });
-        }
-        renderSchedules(filtered);
-      };
     </script>
   </body>
 </html>
