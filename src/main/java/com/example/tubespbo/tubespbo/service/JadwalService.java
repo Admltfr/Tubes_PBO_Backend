@@ -12,6 +12,7 @@ import com.example.tubespbo.tubespbo.exception.ApiException;
 import com.example.tubespbo.tubespbo.mapper.JadwalResponseMapper;
 import com.example.tubespbo.tubespbo.model.request.JadwalRequest;
 import com.example.tubespbo.tubespbo.model.response.JadwalResponse;
+import com.example.tubespbo.tubespbo.model.response.KeretaResponse;
 import com.example.tubespbo.tubespbo.repository.JadwalRepository;
 import com.example.tubespbo.tubespbo.repository.KeretaRepository;
 
@@ -63,11 +64,13 @@ public class JadwalService {
     }
 
     @Transactional
-    public void deleteJadwal(Long id) {
-        if (!jadwalRepository.existsById(id)) {
-            throw new ApiException("Jadwal dengan ID " + id + " tidak ditemukan.");
-        }
-        jadwalRepository.deleteById(id);
+    public JadwalResponse deleteJadwal(Long id) {
+        JadwalEntity entity = jadwalRepository.findById(id)
+            .orElseThrow(() -> new ApiException("Data jadwal dengan ID " + id + " tidak ditemukan"));
+
+        jadwalRepository.delete(entity);
+        return jadwalResponseMapper.toResponse(entity);
+
     }
 
     @Transactional
