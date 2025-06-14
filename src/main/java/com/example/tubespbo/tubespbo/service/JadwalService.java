@@ -70,7 +70,6 @@ public class JadwalService {
 
         jadwalRepository.delete(entity);
         return jadwalResponseMapper.toResponse(entity);
-
     }
 
     @Transactional

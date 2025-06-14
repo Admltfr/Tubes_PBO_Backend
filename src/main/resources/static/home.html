@@ -23,6 +23,82 @@
         color: #d87c2a;
         margin: 20px 0;
       }
+      .search-bar {
+        background: #fff;
+        border-radius: 10px;
+        padding: 10px 18px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+        max-width: 750px;
+        margin: 20px auto 0 auto;
+        font-size: 1.6em;
+      }
+      .search-input {
+        border: none;
+        background: transparent;
+        font-size: 1em;
+        font-weight: 500;
+        width: 90px;
+        outline: none;
+        color: #222;
+      }
+      .search-input::placeholder {
+        color: #222;
+        opacity: 1;
+        font-weight: 500;
+      }
+      .dot-sep {
+        color: #f37021;
+        font-size: 1.1em;
+        letter-spacing: 2px;
+        margin: 0 2px;
+        font-weight: bold;
+      }
+      .date-group {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        position: relative;
+      }
+      .fa-calendar-days {
+        font-size: 1em;
+        color: #111;
+        margin-right: 2px;
+        cursor: pointer;
+      }
+      .date-input {
+        opacity: 0;
+        position: absolute;
+        left: 0;
+        width: 120px;
+        cursor: pointer;
+        height: 100%;
+      }
+      .date-label {
+        color: #f37021;
+        font-size: 0.95em;
+        font-weight: 500;
+        margin-left: 28px;
+        margin-right: 6px;
+        min-width: 140px;
+        cursor: pointer;
+        user-select: none;
+      }
+      .search-btn {
+        background: transparent;
+        border: none;
+        cursor: pointer;
+        font-size: 1em;
+        margin-left: 4px;
+        color: #222;
+        outline: none;
+        transition: color 0.2s;
+      }
+      .search-btn:hover {
+        color: #f37021;
+      }
       .schedule-list {
         max-width: 800px;
         margin: 30px auto 0 auto;
@@ -126,6 +202,15 @@
         .footer {
           gap: 20px;
         }
+        .search-bar {
+          font-size: 1em;
+          padding: 8px 4px;
+          gap: 4px;
+        }
+        .date-label {
+          min-width: 90px;
+          margin-left: 22px;
+        }
       }
     </style>
     <link
@@ -137,6 +222,39 @@
     <header>
       <img src="assets/logo_trainu.png" alt="Train-U Logo" />
     </header>
+
+    <div class="search-bar">
+      <input
+        type="text"
+        id="asal"
+        placeholder=""
+        class="search-input"
+        autocomplete="off"
+        aria-label="Asal"
+      />
+      <span class="dot-sep">.....</span>
+      <input
+        type="text"
+        id="tujuan"
+        placeholder=""
+        class="search-input"
+        autocomplete="off"
+        aria-label="Tujuan"
+      />
+      <span class="dot-sep">.....</span>
+      <span class="date-group">
+        <i
+          class="fa-solid fa-calendar-days"
+          id="calendar-icon"
+          style="cursor: pointer"
+        ></i>
+        <input type="date" id="date" class="date-input" tabindex="-1" />
+        <span id="date-label" class="date-label">20 - april - 2045</span>
+      </span>
+      <button class="search-btn" id="search-btn" title="Cari">
+        <i class="fa-solid fa-magnifying-glass"></i>
+      </button>
+    </div>
 
     <h2>Jadwal Kereta Hari Ini</h2>
 
@@ -151,11 +269,56 @@
     </div>
 
     <script>
-      // Ambil token dari localStorage (jika pakai auth)
+      function formatTanggalIndo(dateStr) {
+        if (!dateStr) return "";
+        const bulan = [
+          "januari",
+          "februari",
+          "maret",
+          "april",
+          "mei",
+          "juni",
+          "juli",
+          "agustus",
+          "september",
+          "oktober",
+          "november",
+          "desember",
+        ];
+        const d = new Date(dateStr);
+        if (isNaN(d)) return "";
+        return (
+          String(d.getDate()).padStart(2, "0") +
+          " - " +
+          bulan[d.getMonth()] +
+          " - " +
+          d.getFullYear()
+        );
+      }
+
+      const dateInput = document.getElementById("date");
+      const dateLabel = document.getElementById("date-label");
+      const calendarIcon = document.getElementById("calendar-icon");
+      const today = new Date();
+      dateInput.value = today.toISOString().slice(0, 10);
+      dateLabel.textContent = formatTanggalIndo(dateInput.value);
+
+      dateInput.addEventListener("input", function () {
+        dateLabel.textContent = formatTanggalIndo(this.value);
+      });
+
+      // Klik label tanggal atau ikon kalender = buka date picker
+      dateLabel.addEventListener("click", function () {
+        dateInput.showPicker ? dateInput.showPicker() : dateInput.click();
+      });
+      calendarIcon.addEventListener("click", function () {
+        dateInput.showPicker ? dateInput.showPicker() : dateInput.click();
+      });
+
+      // --- Jadwal Kereta ---
       const token = localStorage.getItem("token");
       let allSchedules = [];
 
-      // Fetch jadwal dari backend
       fetch("/api/schedules", {
         headers: token ? { Authorization: "Bearer " + token } : {},
       })
@@ -178,7 +341,6 @@
         const scheduleList = document.getElementById("scheduleList");
         scheduleList.innerHTML = "";
         [...schedules].reverse().forEach((jadwal) => {
-          // rute bisa array atau string, handle keduanya
           let rute = "-";
           let asal = "-";
           let tujuan = "-";
@@ -192,7 +354,6 @@
             tujuan = rute.split("-")[1]?.trim() || "-";
           }
 
-          // Format jam keberangkatan dan tiba
           let waktu = "-";
           let waktuTiba = "-";
           let tanggal = "-";
@@ -204,19 +365,16 @@
               month: "long",
               year: "numeric",
             });
-            // waktu tiba = waktu keberangkatan + 2 jam
             const tiba = new Date(d.getTime() + 2 * 60 * 60 * 1000);
             waktuTiba = tiba.toTimeString().substring(0, 5);
           }
 
-          // Kelas dan harga
           const kelas = jadwal.kelas || "-";
           const harga =
             jadwal.harga !== undefined
               ? "IDR " + Number(jadwal.harga).toLocaleString("id-ID")
               : "-";
 
-          // Nama kereta (hanya tampilkan ID, jika ingin nama fetch lagi ke /api/trains/{id})
           const namaKereta = "Kereta ID: " + (jadwal.keretaId || "-");
 
           const card = document.createElement("div");
@@ -254,6 +412,45 @@
               "ticketconfirmation.html?jadwalId=" + jadwalId;
           }
         });
+
+      document.getElementById("search-btn").onclick = function () {
+        const asal = document.getElementById("asal").value.trim().toLowerCase();
+        const tujuan = document
+          .getElementById("tujuan")
+          .value.trim()
+          .toLowerCase();
+        const date = document.getElementById("date").value;
+        let filtered = allSchedules;
+
+        if (asal) {
+          filtered = filtered.filter((jadwal) => {
+            if (Array.isArray(jadwal.rute)) {
+              // Cek semua elemen rute, bukan hanya yang pertama
+              return jadwal.rute.some((r) => r.toLowerCase().includes(asal));
+            } else if (typeof jadwal.rute === "string") {
+              return jadwal.rute.toLowerCase().includes(asal);
+            }
+            return false;
+          });
+        }
+        if (tujuan) {
+          filtered = filtered.filter((jadwal) => {
+            if (Array.isArray(jadwal.rute)) {
+              return jadwal.rute.some((r) => r.toLowerCase().includes(tujuan));
+            } else if (typeof jadwal.rute === "string") {
+              return jadwal.rute.toLowerCase().includes(tujuan);
+            }
+            return false;
+          });
+        }
+        if (date) {
+          filtered = filtered.filter((jadwal) => {
+            if (!jadwal.waktuKeberangkatan) return false;
+            return jadwal.waktuKeberangkatan.slice(0, 10) === date;
+          });
+        }
+        renderSchedules(filtered);
+      };
     </script>
   </body>
 </html>

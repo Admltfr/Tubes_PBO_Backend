@@ -23,6 +23,7 @@ import com.example.tubespbo.tubespbo.model.response.ApiResponse;
 import com.example.tubespbo.tubespbo.model.response.KeretaResponse;
 import com.example.tubespbo.tubespbo.service.KeretaService;
 
+import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 
 
@@ -90,6 +91,7 @@ public class KeretaController {
     
     @DeleteMapping("/delete/{id}")
     @PreAuthorize("hasAuthority('ADMIN')")
+    @Transactional
     public ResponseEntity<ApiResponse<KeretaResponse>> deleteKereta(@PathVariable Long id) {
         try {
             KeretaResponse result = keretaService.deleteKereta(id);
