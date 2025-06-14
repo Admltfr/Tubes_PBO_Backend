@@ -20,9 +20,9 @@ import com.example.tubespbo.tubespbo.mapper.ApiResponseMapper;
 import com.example.tubespbo.tubespbo.model.request.JadwalRequest;
 import com.example.tubespbo.tubespbo.model.response.ApiResponse;
 import com.example.tubespbo.tubespbo.model.response.JadwalResponse;
-import com.example.tubespbo.tubespbo.model.response.KeretaResponse;
 import com.example.tubespbo.tubespbo.service.JadwalService;
 
+import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
@@ -98,7 +98,7 @@ public class JadwalController {
     public ResponseEntity<ApiResponse<JadwalResponse>> deleteJadwal(@PathVariable Long id) {
         try {
             JadwalResponse result = jadwalService.deleteJadwal(id);
-            ApiResponse<JadwalResponse> response = responseBuilder.ToApiResponse(HttpStatus.OK, "Berhasil menghapus data kereta", result);
+            ApiResponse<JadwalResponse> response = responseBuilder.ToApiResponse(HttpStatus.OK, "Berhasil menghapus data jadwal", result);
             return ResponseEntity.ok(response);
         } catch (ApiException ex) {
             throw ex; 

@@ -215,20 +215,19 @@
 
       async function deleteJadwal(id) {
         if (!confirm("Yakin ingin menghapus jadwal ini?")) return;
-        msgDiv.textContent = "Menghapus...";
-        msgDiv.style.color = "black";
-        const response = await fetch(`/api/schedules/delete/${id}`, {
-          method: "DELETE",
-          headers: { Authorization: "Bearer " + token },
-        });
-        if (response.ok) {
-          msgDiv.textContent = "Jadwal berhasil dihapus!";
-          msgDiv.style.color = "green";
-          fetchJadwal();
-        } else {
-          const res = await response.json().catch(() => ({}));
-          msgDiv.textContent = res.message || "Gagal menghapus jadwal!";
-          msgDiv.style.color = "red";
+        try {
+          const response = await fetch(`/api/schedules/delete/${id}`, {
+            method: "DELETE",
+            headers: { Authorization: "Bearer " + token },
+          });
+          if (!response.ok) {
+            const res = await response.json().catch(() => ({}));
+            throw new Error(res.message || "Gagal menghapus jadwal!");
+          }
+          alert("Jadwal berhasil dihapus!");
+          window.location.reload();
+        } catch (err) {
+          alert("Gagal menghapus jadwal: " + err.message);
         }
       }
 
