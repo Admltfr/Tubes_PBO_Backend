@@ -65,7 +65,7 @@
       <img
         src="assets/logo_trainu.png"
         alt="Train-U Logo"
-        style="width: 150px"
+        style="width: 120px"
       />
     </header>
 
@@ -88,6 +88,18 @@
     </form>
 
     <script>
+      function getRoleFromToken(token) {
+        if (!token) return null;
+        const payload = token.split(".")[1];
+        const decoded = atob(payload.replace(/-/g, "+").replace(/_/g, "/"));
+        try {
+          const obj = JSON.parse(decoded);
+          return obj.role || null;
+        } catch {
+          return null;
+        }
+      }
+
       document
         .getElementById("loginForm")
         .addEventListener("submit", async function (e) {
@@ -95,18 +107,17 @@
           const username = document.getElementById("username").value;
           const password = document.getElementById("password").value;
           const errorMsgDiv = document.getElementById("errorMsg");
-
+          errorMsgDiv.style.display = "none";
           try {
             const response = await fetch("/api/auth/login", {
               method: "POST",
               headers: { "Content-Type": "application/json" },
               body: JSON.stringify({ username, password }),
             });
-
             if (response.ok) {
               const data = await response.json();
               localStorage.setItem("token", data.data);
-              // Ambil userId dulu, baru redirect
+
               fetch("/api/users/me", {
                 headers: { Authorization: "Bearer " + data.data },
               })
@@ -116,7 +127,18 @@
                   if (userId) {
                     localStorage.setItem("userId", userId);
                   }
-                  window.location.href = "home.html";
+
+                  const role = getRoleFromToken(data.data);
+                  if (role) {
+                    localStorage.setItem("role", role);
+                    if (role.toUpperCase() === "ADMIN") {
+                      window.location.href = "a-home.html";
+                    } else {
+                      window.location.href = "home.html";
+                    }
+                  } else {
+                    window.location.href = "home.html";
+                  }
                 });
             } else if (response.status === 401) {
               errorMsgDiv.textContent = "Username atau password salah.";

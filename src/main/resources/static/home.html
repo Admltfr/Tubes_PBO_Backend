@@ -16,7 +16,7 @@
         background-color: #003366;
       }
       header img {
-        width: 180px;
+        width: 120px;
       }
       h2 {
         text-align: center;
@@ -177,7 +177,7 @@
       function renderSchedules(schedules) {
         const scheduleList = document.getElementById("scheduleList");
         scheduleList.innerHTML = "";
-        schedules.forEach((jadwal) => {
+        [...schedules].reverse().forEach((jadwal) => {
           // rute bisa array atau string, handle keduanya
           let rute = "-";
           let asal = "-";

@@ -3,6 +3,10 @@
   <head>
     <meta charset="UTF-8" />
     <title>Setting Train Admin</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"
+    />
     <style>
       body {
         font-family: Arial, sans-serif;
@@ -15,7 +19,7 @@
         text-align: center;
       }
       .header img {
-        height: 60px;
+        height: 120px;
       }
       h2 {
         text-align: center;
@@ -61,21 +65,35 @@
         cursor: pointer;
       }
       .footer {
-        background-color: #003366;
-        color: white;
+        background: #003366;
+        padding: 15px 0;
         text-align: center;
-        padding: 15px;
         position: fixed;
+        width: 100vw;
+        left: 0;
         bottom: 0;
-        width: 100%;
+        display: flex;
+        justify-content: center;
+        gap: 60px;
+        z-index: 10;
       }
       .footer a {
-        color: orange;
+        color: white;
         text-decoration: none;
+        font-size: 28px;
         margin: 0 15px;
+        font-weight: bold;
+        display: inline-block;
+        transition: color 0.2s;
       }
+      .footer a.active,
       .footer a:hover {
-        text-decoration: underline;
+        color: #ff9900;
+      }
+      @media (max-width: 600px) {
+        .footer {
+          gap: 20px;
+        }
       }
     </style>
   </head>
@@ -97,11 +115,19 @@
         <th>Edit</th>
         <th>Delete</th>
       </tr>
-      <!-- Data rows will be inserted here by JavaScript -->
     </table>
-
+    <div class="footer">
+      <a href="a-home.html" title="Home">
+        <i class="fa-solid fa-house"></i>
+      </a>
+      <a href="a-listtrain.html" class="active" title="Kereta">
+        <i class="fa-solid fa-train-subway"></i>
+      </a>
+      <a href="a-listschedule.html" title="Jadwal">
+        <i class="fa-solid fa-calendar-days"></i>
+      </a>
+    </div>
     <script>
-      // Get token from localStorage (adjust the key if you use a different one)
       const token = localStorage.getItem("token");
 
       fetch("/api/trains", {
@@ -121,21 +147,17 @@
         })
         .then((data) => {
           let keretaList = data.data || [];
-          // Sort keretaList by id ascending
           keretaList = keretaList.sort((a, b) => a.id - b.id);
 
           const table = document.getElementById("kereta-table");
-          // Remove existing rows except header
           while (table.rows.length > 1) table.deleteRow(1);
 
-          keretaList.forEach((kereta) => {
+          [...keretaList].reverse().forEach((kereta) => {
             const row = table.insertRow();
-            // Show real Kereta Id from database
             row.insertCell().innerText = kereta.id;
             row.insertCell().innerText = kereta.asal;
             row.insertCell().innerText = kereta.tujuan;
 
-            // Edit button
             const editCell = row.insertCell();
             const editBtn = document.createElement("button");
             editBtn.className = "edit-btn";
@@ -145,7 +167,6 @@
             };
             editCell.appendChild(editBtn);
 
-            // Delete button (enabled)
             const deleteCell = row.insertCell();
             const deleteBtn = document.createElement("button");
             deleteBtn.className = "delete-btn";

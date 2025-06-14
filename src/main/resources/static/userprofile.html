@@ -15,7 +15,7 @@
         text-align: center;
       }
       .header img {
-        width: 180px;
+        width: 120px;
       }
       .container {
         display: flex;
@@ -293,6 +293,7 @@
       document.getElementById("logoutBtn").onclick = function () {
         localStorage.removeItem("token");
         localStorage.removeItem("userId");
+        localStorage.removeItem("role");
         window.location.href = "index.html";
       };
 
