@@ -1,276 +1,367 @@
-<!-- <!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>User Profile - Train-U</title>
-  <style>
-    body {
-      margin: 0;
-      font-family: Arial, sans-serif;
-      background-color: white;
-    }
-
-    .header {
-      background-color: #003366;
-      padding: 20px;
-      text-align: center;
-    }
-
-    .header img {
-      height: 50px;
-    }
-
-    .container {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      padding: 30px 0;
-    }
-
-    .card {
-      background-color: #f5f5f5;
-      padding: 40px 30px;
-      border-radius: 10px;
-      box-shadow: 0 0 10px rgba(0,0,0,0.15);
-      width: 400px;
-      text-align: center;
-    }
-
-    .card h2 {
-      color: #e28a00;
-      margin-bottom: 25px;
-    }
-
-    label {
-      display: block;
-      text-align: left;
-      margin: 10px 0 5px;
-      font-weight: bold;
-    }
-
-    input {
-      width: 100%;
-      padding: 10px;
-      border-radius: 5px;
-      border: 1px solid #ccc;
-      margin-bottom: 10px;
-    }
-
-    .btn {
-      display: inline-block;
-      width: 45%;
-      padding: 10px;
-      font-weight: bold;
-      border: none;
-      border-radius: 5px;
-      cursor: pointer;
-      margin: 10px 2%;
-    }
-
-    .save-btn {
-      background-color: #ffa500;
-      color: white;
-    }
-
-    .logout-btn {
-      background-color: red;
-      color: white;
-    }
-
-    .footer {
-      background-color: #003366;
-      padding: 15px 0;
-      text-align: center;
-    }
-
-    .footer a {
-      color: white;
-      text-decoration: none;
-      margin: 0 15px;
-      font-weight: bold;
-    }
-
-    .footer a:hover {
-      text-decoration: underline;
-    }
-  </style>
-</head>
-<body>
-
-  <div class="header">
-    <img src="logo.png" alt="Train-U Logo">
-  </div>
-
-  <div class="container">
-    <div class="card">
-      <h2>User Profile</h2>
-
-      <label>User name</label>
-      <input type="text" placeholder="...">
-
-      <label>Password</label>
-      <input type="password" placeholder="...">
-
-      <label>Email</label>
-      <input type="email" placeholder="...">
-
-      <label>Handphone Number</label>
-      <input type="text" placeholder="...">
-
-      <button class="btn save-btn">SAVE CHANGE</button>
-      <button class="btn logout-btn">LOGOUT</button>
-    </div>
-  </div>
-
-  <div class="footer">
-    <a href="history.html">History</a> |
-    <a href="home.html">Home</a> |
-    <a href="userprofile.html">Profile</a>
-  </div>
-
-</body>
-</html> -->
-
 <!DOCTYPE html>
 <html lang="id">
-<head>
-  <meta charset="UTF-8">
-  <title>User Profile - Train-U</title>
-  <style>
-    body { margin: 0; font-family: Arial, sans-serif; background-color: #f5f5f5; }
-    .header { background-color: #003366; padding: 30px 0 10px 0; text-align: center; }
-    .header img { width: 180px; }
-    .container { display: flex; justify-content: center; align-items: center; padding: 30px 0; }
-    .card { background-color: #fff; padding: 40px 30px; border-radius: 10px; box-shadow: 0 0 10px rgba(0,0,0,0.08); width: 420px; text-align: center; }
-    .card h2 { color: #ff9900; margin-bottom: 25px; font-size: 2em; font-weight: bold; }
-    label { display: block; text-align: left; margin: 10px 0 5px; font-weight: bold; }
-    input { width: 100%; padding: 10px; border-radius: 5px; border: 1px solid #ccc; margin-bottom: 10px; font-size: 1em; background: #f5f5f5; }
-    .btn-row { display: flex; gap: 18px; margin-top: 18px; justify-content: center; }
-    .btn { flex: 1; padding: 12px 0; font-weight: bold; border: none; border-radius: 5px; cursor: pointer; font-size: 1em; }
-    .logout-btn { background-color: #e53935; color: white; }
-    .footer { background-color: #003366; padding: 15px 0; text-align: center; position: fixed; width: 100vw; left: 0; bottom: 0; display: flex; justify-content: center; gap: 60px; }
-    .footer a { color: white; text-decoration: none; font-size: 28px; margin: 0 15px; font-weight: bold; display: inline-block; }
-    .footer a.active { color: #ff9900; }
-    .msg { margin: 10px 0; color: #e53935; font-weight: bold; }
-    .msg.success { color: #388e3c; }
-    #resetForm { display: none; margin-top: 10px; }
-    #showReset { background:#1a4b8a;color:white;padding:8px 16px;border:none;border-radius:5px;cursor:pointer; }
-    #resetBtn { background:#ffa500;color:white;padding:8px 16px;border:none;border-radius:5px;margin-top:8px; }
-    @media (max-width: 600px) { .card { width: 98vw; padding: 18px 2vw; } .footer { gap: 20px; } }
-  </style>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"/>
-</head>
-<body>
+  <head>
+    <meta charset="UTF-8" />
+    <title>User Profile - Train-U</title>
+    <style>
+      body {
+        margin: 0;
+        font-family: Arial, sans-serif;
+        background-color: #f5f5f5;
+      }
+      .header {
+        background-color: #003366;
+        padding: 30px 0 10px 0;
+        text-align: center;
+      }
+      .header img {
+        width: 120px;
+      }
+      .container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 30px 0;
+      }
+      .card {
+        background-color: #fff;
+        padding: 40px 30px;
+        border-radius: 10px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.08);
+        width: 420px;
+        text-align: center;
+      }
+      .card h2 {
+        color: #ff9900;
+        margin-bottom: 25px;
+        font-size: 2em;
+        font-weight: bold;
+      }
+      label {
+        display: block;
+        text-align: left;
+        margin: 10px 0 5px;
+        font-weight: bold;
+      }
+      input {
+        width: 100%;
+        padding: 10px;
+        border-radius: 5px;
+        border: 1px solid #ccc;
+        margin-bottom: 10px;
+        font-size: 1em;
+        background: #f5f5f5;
+      }
+      .btn-row {
+        display: flex;
+        gap: 18px;
+        margin-top: 18px;
+        justify-content: center;
+      }
+      .btn {
+        flex: 1;
+        padding: 12px 0;
+        font-weight: bold;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 1em;
+      }
+      .logout-btn {
+        background-color: #e53935;
+        color: white;
+      }
+      .footer {
+        background-color: #003366;
+        padding: 15px 0;
+        text-align: center;
+        position: fixed;
+        width: 100vw;
+        left: 0;
+        bottom: 0;
+        display: flex;
+        justify-content: center;
+        gap: 60px;
+      }
+      .footer a {
+        color: white;
+        text-decoration: none;
+        font-size: 28px;
+        margin: 0 15px;
+        font-weight: bold;
+        display: inline-block;
+      }
+      .footer a.active {
+        color: #ff9900;
+      }
+      .msg {
+        margin: 10px 0;
+        color: #e53935;
+        font-weight: bold;
+      }
+      .msg.success {
+        color: #388e3c;
+      }
+      #showReset {
+        background: #1a4b8a;
+        color: white;
+        padding: 8px 16px;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+      }
+      .modal {
+        display: none;
+        position: fixed;
+        z-index: 99;
+        left: 0;
+        top: 0;
+        width: 100vw;
+        height: 100vh;
+        background: rgba(0, 0, 0, 0.25);
+        justify-content: center;
+        align-items: center;
+      }
+      .modal-content {
+        background: #fff;
+        border-radius: 10px;
+        padding: 32px 28px 22px 28px;
+        width: 350px;
+        box-shadow: 0 4px 24px rgba(0, 0, 0, 0.13);
+        position: relative;
+        text-align: left;
+      }
+      .modal-content h3 {
+        margin-top: 0;
+        color: #1a4b8a;
+        text-align: center;
+        margin-bottom: 18px;
+      }
+      .modal-content label {
+        font-weight: bold;
+        margin-top: 10px;
+        display: block;
+      }
+      .modal-content input {
+        width: 100%;
+        padding: 9px;
+        border-radius: 5px;
+        border: 1px solid #ccc;
+        margin-bottom: 10px;
+        font-size: 1em;
+        background: #f5f5f5;
+      }
+      .modal-content .modal-btn-row {
+        display: flex;
+        gap: 10px;
+        margin-top: 10px;
+        justify-content: flex-end;
+      }
+      .modal-content .btn-cancel {
+        background: #e53935;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        padding: 8px 16px;
+        cursor: pointer;
+      }
+      .modal-content .btn-reset {
+        background: #ffa500;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        padding: 8px 16px;
+        cursor: pointer;
+        font-weight: bold;
+      }
+      .modal-content .msg {
+        margin: 8px 0 0 0;
+        font-size: 0.98em;
+        text-align: center;
+      }
+      .modal-content .close-x {
+        position: absolute;
+        right: 16px;
+        top: 10px;
+        font-size: 22px;
+        color: #888;
+        cursor: pointer;
+        font-weight: bold;
+      }
+      @media (max-width: 600px) {
+        .card {
+          width: 98vw;
+          padding: 18px 2vw;
+        }
+        .footer {
+          gap: 20px;
+        }
+        .modal-content {
+          width: 95vw;
+          min-width: 0;
+        }
+      }
+    </style>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"
+    />
+  </head>
+  <body>
+    <div class="header">
+      <img src="assets/logo_trainu.png" alt="Train-U Logo" />
+    </div>
 
-  <div class="header">
-    <img src="assets/logo_trainu.png" alt="Train-U Logo">
-  </div>
+    <div class="container">
+      <div class="card">
+        <h2>User Profile</h2>
 
-  <div class="container">
-    <div class="card">
-      <h2>User Profile</h2>
+        <div id="msg" class="msg" style="display: none"></div>
 
-      <div id="msg" class="msg" style="display:none"></div>
+        <label>User name</label>
+        <input type="text" id="username" readonly />
 
-      <label>User name</label>
-      <input type="text" id="username" readonly />
+        <label>Password</label>
+        <input type="password" value="********" readonly />
 
-      <label>Password</label>
-      <input type="password" value="********" readonly />
+        <label>Email</label>
+        <input type="email" id="email" readonly />
 
-      <label>Email</label>
-      <input type="email" id="email" readonly />
+        <label>Handphone Number</label>
+        <input type="text" id="nomorTelepon" readonly />
 
-      <label>Handphone Number</label>
-      <input type="text" id="nomorTelepon" readonly />
+        <div class="btn-row">
+          <button class="btn logout-btn" id="logoutBtn">LOGOUT</button>
+        </div>
 
-      <div class="btn-row">
-        <button class="btn logout-btn" id="logoutBtn">LOGOUT</button>
-      </div>
-
-      <div style="margin-top:20px; text-align:left;">
-        <button id="showReset">RESET PASSWORD</button>
-        <div id="resetForm">
-          <label>Email</label>
-          <input type="email" id="resetEmail" placeholder="Masukkan email anda" />
-          <label>Password Baru</label>
-          <input type="password" id="resetPassword" placeholder="Password baru" />
-          <button id="resetBtn">KIRIM RESET</button>
-          <div id="resetMsg" class="msg" style="display:none"></div>
+        <div class="btn-row">
+          <button id="showReset" type="button">RESET PASSWORD</button>
+        </div>
+        <div id="resetModal" class="modal">
+          <div class="modal-content">
+            <span class="close-x" id="closeResetModal">&times;</span>
+            <h3>Reset Password</h3>
+            <label>Email</label>
+            <input
+              type="email"
+              id="resetEmail"
+              placeholder="Masukkan email anda"
+            />
+            <label>Password Baru</label>
+            <input
+              type="password"
+              id="resetPassword"
+              placeholder="Password baru"
+            />
+            <div class="modal-btn-row">
+              <button class="btn-cancel" type="button" id="cancelResetBtn">
+                BATAL
+              </button>
+              <button class="btn-reset" type="button" id="resetBtn">
+                KIRIM RESET
+              </button>
+            </div>
+            <div id="resetMsg" class="msg" style="display: none"></div>
+          </div>
         </div>
       </div>
     </div>
-  </div>
 
-  <div class="footer">
-    <a href="history.html"><i class="fa-solid fa-clock-rotate-left"></i></a>
-    <a href="home.html"><i class="fa-solid fa-house"></i></a>
-    <a href="userprofile.html" class="active"><i class="fa-solid fa-user"></i></a>
-  </div>
+    <div class="footer">
+      <a href="history.html"><i class="fa-solid fa-clock-rotate-left"></i></a>
+      <a href="home.html"><i class="fa-solid fa-house"></i></a>
+      <a href="userprofile.html" class="active"
+        ><i class="fa-solid fa-user"></i
+      ></a>
+    </div>
 
-  <script>
-    const token = localStorage.getItem("token");
+    <script>
+      const token = localStorage.getItem("token");
 
-    // Load data user
-    fetch("/api/users/me", {
-      headers: token ? { Authorization: "Bearer " + token } : {}
-    })
-      .then(res => res.json())
-      .then(data => {
-        document.getElementById("username").value = data.data?.username || "";
-        document.getElementById("email").value = data.data?.email || "";
-        document.getElementById("nomorTelepon").value = data.data?.nomorTelepon || "";
-        document.getElementById("resetEmail").value = data.data?.email || "";
-      });
-
-    // Logout
-    document.getElementById("logoutBtn").onclick = function() {
-      localStorage.removeItem("token");
-      localStorage.removeItem("userId");
-      window.location.href = "index.html";
-    };
-
-    // Tampilkan/Hide form reset password
-    document.getElementById("showReset").onclick = function() {
-      const form = document.getElementById("resetForm");
-      form.style.display = form.style.display === "none" ? "block" : "none";
-      document.getElementById("resetMsg").style.display = "none";
-    };
-
-    // Reset password
-    document.getElementById("resetBtn").onclick = function() {
-      const email = document.getElementById("resetEmail").value.trim();
-      const newPassword = document.getElementById("resetPassword").value.trim();
-      const msg = document.getElementById("resetMsg");
-      msg.style.display = "none";
-      if (!email || !newPassword) {
-        msg.textContent = "Email dan password baru wajib diisi.";
-        msg.className = "msg";
-        msg.style.display = "block";
-        return;
-      }
-      fetch("/api/auth/reset-password", {
-        method: "POST",
-        headers: { "Content-Type": "application/json", ...(token ? { Authorization: "Bearer " + token } : {}) },
-        body: JSON.stringify({ email, newPassword })
+      fetch("/api/users/me", {
+        headers: token ? { Authorization: "Bearer " + token } : {},
       })
-      .then(res => res.json())
-      .then(data => {
-        if (data.status === 200) {
-          msg.textContent = "Password berhasil direset!";
-          msg.className = "msg success";
-        } else {
-          msg.textContent = data.message || "Gagal reset password.";
-          msg.className = "msg";
+        .then((res) => res.json())
+        .then((data) => {
+          document.getElementById("username").value = data.data?.username || "";
+          document.getElementById("email").value = data.data?.email || "";
+          document.getElementById("nomorTelepon").value =
+            data.data?.nomorTelepon || "";
+          document.getElementById("resetEmail").value = data.data?.email || "";
+        });
+
+      document.getElementById("logoutBtn").onclick = function () {
+        localStorage.removeItem("token");
+        localStorage.removeItem("userId");
+        localStorage.removeItem("role");
+        window.location.href = "index.html";
+      };
+
+      const resetModal = document.getElementById("resetModal");
+      const showResetBtn = document.getElementById("showReset");
+      const closeResetModal = document.getElementById("closeResetModal");
+      const cancelResetBtn = document.getElementById("cancelResetBtn");
+      const resetMsg = document.getElementById("resetMsg");
+
+      showResetBtn.onclick = function () {
+        resetModal.style.display = "flex";
+        resetMsg.style.display = "none";
+        document.getElementById("resetPassword").value = "";
+      };
+      closeResetModal.onclick = cancelResetBtn.onclick = function () {
+        resetModal.style.display = "none";
+        resetMsg.style.display = "none";
+      };
+      window.onclick = function (event) {
+        if (event.target === resetModal) {
+          resetModal.style.display = "none";
+          resetMsg.style.display = "none";
         }
-        msg.style.display = "block";
-      })
-      .catch(() => {
-        msg.textContent = "Gagal terhubung ke server.";
-        msg.className = "msg";
-        msg.style.display = "block";
-      });
-    };
-  </script>
-</body>
+      };
+
+      document.getElementById("resetBtn").onclick = function () {
+        const email = document.getElementById("resetEmail").value.trim();
+        const newPassword = document
+          .getElementById("resetPassword")
+          .value.trim();
+        resetMsg.style.display = "none";
+        if (!email || !newPassword) {
+          resetMsg.textContent = "Email dan password baru wajib diisi.";
+          resetMsg.className = "msg";
+          resetMsg.style.display = "block";
+          return;
+        }
+        if (newPassword.length < 8) {
+          resetMsg.textContent = "Password minimal 8 karakter.";
+          resetMsg.className = "msg";
+          resetMsg.style.display = "block";
+          return;
+        }
+        fetch("/api/auth/reset-password", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            ...(token ? { Authorization: "Bearer " + token } : {}),
+          },
+          body: JSON.stringify({ email, newPassword }),
+        })
+          .then((res) => res.json())
+          .then((data) => {
+            if (data.status === 200) {
+              resetMsg.textContent = "Password berhasil direset!";
+              resetMsg.className = "msg success";
+            } else {
+              resetMsg.textContent = data.message || "Gagal reset password.";
+              resetMsg.className = "msg";
+            }
+            resetMsg.style.display = "block";
+          })
+          .catch(() => {
+            resetMsg.textContent = "Gagal terhubung ke server.";
+            resetMsg.className = "msg";
+            resetMsg.style.display = "block";
+          });
+      };
+    </script>
+  </body>
 </html>

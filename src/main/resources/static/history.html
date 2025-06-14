@@ -1,114 +1,252 @@
 <!DOCTYPE html>
 <html lang="id">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Ticket Purchase History - Train-U</title>
-  <style>
-    * { box-sizing: border-box; font-family: Arial, sans-serif; }
-    body { margin: 0; background-color: #f5f5f5; display: flex; flex-direction: column; min-height: 100vh; }
-    header { background-color: #003366; text-align: center; padding: 20px; }
-    header img { width: 160px; }
-    h2 { text-align: center; color: #d87c2a; margin: 20px 0; }
-    .history-list { padding: 20px; flex: 1; }
-    .history-card { background-color: white; border: 4px solid #1a4b8a; border-radius: 12px; padding: 15px 20px; margin-bottom: 20px; }
-    .history-title { font-size: 18px; font-weight: bold; color: black; margin-bottom: 10px; text-align: center; }
-    .history-info { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; }
-    .time-info { display: flex; align-items: center; gap: 10px; }
-    .time-block { text-align: center; }
-    .time-block div:first-child { font-size: 18px; font-weight: bold; }
-    .arrow { font-size: 20px; }
-    .class-info { font-size: 15px; color: #d87c2a; font-weight: bold; margin-left: 10px; }
-    .price-info { color: #1a4b8a; font-weight: bold; font-size: 15px; margin-left: 10px; }
-    .booked-btn { margin-top: 5px; padding: 5px 10px; background-color: #d87c2a; color: white; border: none; border-radius: 5px; font-size: 14px; cursor: not-allowed; }
-    footer { background-color: #003366; display: flex; justify-content: space-around; padding: 10px 0; }
-    footer a { color: white; text-decoration: none; font-weight: bold; font-size: 16px; }
-  </style>
-</head>
-<body>
-  <header>
-    <img src="assets/logo_trainu.png" alt="Train-U Logo" />
-  </header>
-
-  <h2>Ticket Purchase History</h2>
-
-  <div class="history-list" id="historyList">
-    <!-- Riwayat pemesanan akan dimuat di sini -->
-  </div>
-
-  <footer>
-    <a href="history.html">History</a>
-    <a href="home.html">Home</a>
-    <a href="userprofile.html">Profile</a>
-  </footer>
-
-  <script>
-    const token = localStorage.getItem("token");
-    const userId = localStorage.getItem("userId");
-
-    // Ambil hanya history milik user login
-    fetch("/api/pemesanan/riwayat/" + userId, {
-      headers: token ? { Authorization: "Bearer " + token } : {}
-    })
-      .then(response => response.json())
-      .then(data => {
-        const historyList = document.getElementById("historyList");
-        if (!data.data || data.data.length === 0) {
-          historyList.innerHTML = "<p>Belum ada riwayat pemesanan.</p>";
-          return;
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Ticket Purchase History - Train-U</title>
+    <style>
+      body {
+        margin: 0;
+        font-family: Arial, sans-serif;
+        background: #f5f5f5;
+      }
+      header {
+        text-align: center;
+        padding: 30px;
+        background-color: #003366;
+      }
+      header img {
+        width: 120px;
+      }
+      h2 {
+        text-align: center;
+        color: #d87c2a;
+        margin: 20px 0;
+      }
+      .history-list {
+        max-width: 800px;
+        margin: 30px auto 0 auto;
+        padding-bottom: 90px;
+      }
+      .history-card {
+        background: #fff;
+        border: 4px solid #1a4b8a;
+        border-radius: 12px;
+        margin-bottom: 25px;
+        padding: 20px 30px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 18px;
+      }
+      .history-left {
+        min-width: 120px;
+        text-align: center;
+      }
+      .history-left .jam {
+        font-size: 22px;
+        font-weight: bold;
+        margin-bottom: 2px;
+      }
+      .history-left .kota {
+        font-size: 15px;
+        color: #222;
+      }
+      .history-mid {
+        flex: 1;
+        text-align: center;
+      }
+      .history-title {
+        font-size: 20px;
+        font-weight: bold;
+        color: #1a4b8a;
+        margin-bottom: 8px;
+      }
+      .history-info-row {
+        display: flex;
+        justify-content: center;
+        gap: 8px;
+        margin-bottom: 2px;
+      }
+      .class-info {
+        color: #d87c2a;
+        font-weight: bold;
+        font-size: 15px;
+        margin-right: 10px;
+        display: inline-block;
+      }
+      .price-info {
+        color: #1a4b8a;
+        font-weight: bold;
+        font-size: 15px;
+        display: inline-block;
+      }
+      .tanggal-info {
+        font-size: 1em;
+        color: #333;
+        text-align: center;
+        margin-top: 2px;
+      }
+      .history-right {
+        min-width: 100px;
+        text-align: center;
+      }
+      .booked-btn {
+        background-color: #d87c2a;
+        color: white;
+        border: none;
+        border-radius: 6px;
+        font-size: 15px;
+        font-weight: bold;
+        padding: 7px 22px;
+        cursor: not-allowed;
+        margin-top: 10px;
+      }
+      .footer {
+        background: #003366;
+        padding: 15px 0;
+        text-align: center;
+        position: fixed;
+        width: 100vw;
+        left: 0;
+        bottom: 0;
+        display: flex;
+        justify-content: center;
+        gap: 60px;
+      }
+      .footer a {
+        color: white;
+        text-decoration: none;
+        font-size: 28px;
+        margin: 0 15px;
+        font-weight: bold;
+        display: inline-block;
+      }
+      .footer a.active {
+        color: #ff9900;
+      }
+      @media (max-width: 600px) {
+        .history-list {
+          max-width: 99vw;
         }
-        // Tampilkan data terbaru di atas
-        [...data.data].reverse().forEach(pemesanan => {
-          const jadwal = pemesanan.jadwal || {};
-          let rute = "-";
-          let asal = "-";
-          let tujuan = "-";
-          if (Array.isArray(jadwal.rute)) {
-            rute = jadwal.rute.join(" - ");
-            asal = jadwal.rute[0] || "-";
-            tujuan = jadwal.rute[jadwal.rute.length-1] || "-";
-          } else if (typeof jadwal.rute === "string") {
-            rute = jadwal.rute;
-            asal = rute.split("-")[0]?.trim() || "-";
-            tujuan = rute.split("-")[1]?.trim() || "-";
-          }
-          const waktu = jadwal.waktuKeberangkatan ? jadwal.waktuKeberangkatan.substring(11,16) : "-";
-          const waktuTiba = jadwal.tanggal ? jadwal.tanggal.substring(11,16) : "-";
-          const kelas = pemesanan.kelas || "-";
-          const harga = pemesanan.harga ? "IDR " + pemesanan.harga.toLocaleString("id-ID") : "-";
-          const namaKereta = jadwal.keretaNama || "Kereta";
+        .history-card {
+          padding: 10px 4vw;
+        }
+        .footer {
+          gap: 20px;
+        }
+      }
+    </style>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"
+    />
+  </head>
+  <body>
+    <header>
+      <img src="assets/logo_trainu.png" alt="Train-U Logo" />
+    </header>
 
-          const card = document.createElement("div");
-          card.className = "history-card";
-          card.innerHTML = `
-            <div class="history-title">${namaKereta} (${rute})</div>
-            <div class="history-info">
-              <div class="time-info">
-                <div class="time-block">
-                  <div>${waktu}</div>
-                  <div>${asal}</div>
-                </div>
-                <div class="arrow">→</div>
-                <div class="time-block">
-                  <div>${waktuTiba}</div>
-                  <div>${tujuan}</div>
-                </div>
-              </div>
-              <div class="class-info">
-                ${kelas}
-              </div>
-              <div class="price-info">
-                ${harga}
-              </div>
-              <button class="booked-btn" disabled>Booked</button>
-            </div>
-          `;
-          historyList.appendChild(card);
-        });
+    <h2>Ticket Purchase History</h2>
+
+    <div class="history-list" id="historyList">
+      <!-- Riwayat pemesanan akan dimuat di sini -->
+    </div>
+
+    <div class="footer">
+      <a href="history.html" class="active"
+        ><i class="fa-solid fa-clock-rotate-left"></i
+      ></a>
+      <a href="home.html"><i class="fa-solid fa-house"></i></a>
+      <a href="userprofile.html"><i class="fa-solid fa-user"></i></a>
+    </div>
+
+    <script>
+      const token = localStorage.getItem("token");
+      const userId = localStorage.getItem("userId");
+
+      // Ambil hanya history milik user login
+      fetch("/api/pemesanan/riwayat/" + userId, {
+        headers: token ? { Authorization: "Bearer " + token } : {},
       })
-      .catch(error => {
-        document.getElementById("historyList").innerHTML = "<p>Gagal memuat riwayat pemesanan.</p>";
-      });
-  </script>
-</body>
+        .then((response) => response.json())
+        .then((data) => {
+          const historyList = document.getElementById("historyList");
+          if (!data.data || data.data.length === 0) {
+            historyList.innerHTML = "<p>Belum ada riwayat pemesanan.</p>";
+            return;
+          }
+          // Tampilkan data terbaru di atas
+          [...data.data].reverse().forEach((pemesanan) => {
+            const jadwal = pemesanan.jadwal || {};
+            let rute = "-";
+            let asal = "-";
+            let tujuan = "-";
+            if (Array.isArray(jadwal.rute)) {
+              rute = jadwal.rute.join(" - ");
+              asal = jadwal.rute[0] || "-";
+              tujuan = jadwal.rute[jadwal.rute.length - 1] || "-";
+            } else if (typeof jadwal.rute === "string") {
+              rute = jadwal.rute;
+              asal = rute.split("-")[0]?.trim() || "-";
+              tujuan = rute.split("-")[1]?.trim() || "-";
+            }
+            // Format waktu keberangkatan
+            let waktu = "-";
+            let tanggal = "-";
+            if (jadwal.waktuKeberangkatan) {
+              const d = new Date(jadwal.waktuKeberangkatan);
+              waktu = d.toTimeString().substring(0, 5);
+              tanggal = d.toLocaleDateString("id-ID", {
+                day: "2-digit",
+                month: "long",
+                year: "numeric",
+              });
+            }
+            // waktu tiba = waktu keberangkatan + 2 jam
+            let waktuTiba = "-";
+            if (jadwal.waktuKeberangkatan) {
+              const d = new Date(jadwal.waktuKeberangkatan);
+              const tiba = new Date(d.getTime() + 2 * 60 * 60 * 1000);
+              waktuTiba = tiba.toTimeString().substring(0, 5);
+            }
+            const kelas = jadwal.kelas || "-";
+            const harga =
+              jadwal.harga !== undefined
+                ? "IDR " + Number(jadwal.harga).toLocaleString("id-ID")
+                : "-";
+            const namaKereta = jadwal.keretaNama || "Kereta";
+
+            const card = document.createElement("div");
+            card.className = "history-card";
+            card.innerHTML = `
+              <div class="history-left">
+                <div class="jam">${waktu}</div>
+                <div class="kota">${asal}</div>
+                <div style="font-size:18px;font-weight:bold;margin:4px 0;">→</div>
+                <div class="jam">${waktuTiba}</div>
+                <div class="kota">${tujuan}</div>
+              </div>
+              <div class="history-mid">
+                <div class="history-title">${namaKereta} (${rute})</div>
+                <div class="history-info-row">
+                  <span class="class-info">Kelas: ${kelas}</span>
+                  <span class="price-info">Harga: ${harga}</span>
+                </div>
+                <div class="tanggal-info">Tanggal: ${tanggal}</div>
+              </div>
+              <div class="history-right">
+                <button class="booked-btn" disabled>Booked</button>
+              </div>
+            `;
+            historyList.appendChild(card);
+          });
+        })
+        .catch((error) => {
+          document.getElementById("historyList").innerHTML =
+            "<p>Gagal memuat riwayat pemesanan.</p>";
+        });
+    </script>
+  </body>
 </html>

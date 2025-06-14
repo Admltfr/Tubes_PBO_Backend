@@ -1,96 +1,158 @@
 <!DOCTYPE html>
 <html lang="id">
-<head>
-  <meta charset="UTF-8">
-  <title>Admin Home - Train-U</title>
-  <style>
-    body {
-      margin: 0;
-      font-family: Arial, sans-serif;
-      background-color: white;
-    }
-
-    .header {
-      background-color: #003366;
-      padding: 20px;
-      text-align: center;
-    }
-
-    .header img {
-      height: 50px;
-    }
-
-    .container {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: calc(100vh - 80px); /* Full screen minus header/footer */
-    }
-
-    .card {
-      background-color: #f5f5f5;
-      padding: 40px 30px;
-      border-radius: 10px;
-      box-shadow: 0 0 10px rgba(0,0,0,0.15);
-      width: 300px;
-      text-align: center;
-    }
-
-    .card h2 {
-      color: #ff6600;
-      margin-bottom: 30px;
-    }
-
-    .button {
-      display: block;
-      width: 100%;
-      padding: 12px;
-      margin: 10px 0;
-      font-size: 15px;
-      font-weight: bold;
-      border: none;
-      border-radius: 5px;
-      cursor: pointer;
-      text-decoration: none;
-      text-align: center;
-    }
-
-    .schedule-btn, .train-btn {
-      background-color: #ff6600;
-      color: white;
-    }
-
-    .train-btn:focus {
-      outline: 2px solid #0099ff;
-    }
-
-    .logout-btn {
-      background-color: red;
-      color: white;
-    }
-
-    .footer {
-      height: 8px;
-      background-color: #003366;
-    }
-  </style>
-</head>
-<body>
-
-  <div class="header">
-    <img src="logo.png" alt="Train-U Logo">
-  </div>
-
-  <div class="container">
-    <div class="card">
-      <h2>Admin Setting</h2>
-      <a href="alistschedule.html" class="button schedule-btn">SCHEDULE SETTING</a>
-      <a href="alisttrain.html" class="button train-btn">TRAIN SETTING</a>
-      <button class="button logout-btn">LOGOUT</button>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Admin Home - Train-U</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <style>
+      body {
+        margin: 0;
+        font-family: Arial, sans-serif;
+        background-color: #f5f5f5;
+      }
+      .header {
+        background-color: #003366;
+        padding: 30px 0 10px 0;
+        text-align: center;
+      }
+      .header img {
+        width: 120px;
+      }
+      .container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: calc(100vh - 120px);
+        padding-bottom: 60px;
+      }
+      .card {
+        background: #f7f7f7;
+        border-radius: 18px;
+        box-shadow: 0 4px 18px rgba(0, 0, 0, 0.08);
+        padding: 38px 32px 32px 32px;
+        max-width: 350px;
+        margin: 40px auto;
+        text-align: center;
+      }
+      .card h2 {
+        color: #f37021;
+        font-size: 2em;
+        font-weight: bold;
+        margin-bottom: 32px;
+        letter-spacing: 1px;
+      }
+      .admin-btn {
+        width: 100%;
+        padding: 16px 0;
+        margin-bottom: 18px;
+        border: none;
+        border-radius: 8px;
+        font-size: 1.15em;
+        font-weight: bold;
+        letter-spacing: 1px;
+        color: #fff;
+        cursor: pointer;
+        transition: background 0.2s, box-shadow 0.2s;
+        box-shadow: 0 2px 8px rgba(243, 112, 33, 0.08);
+      }
+      .admin-btn:last-child {
+        margin-bottom: 0;
+      }
+      .orange-btn {
+        background: linear-gradient(90deg, #f37021 60%, #f7971e 100%);
+      }
+      .orange-btn:hover {
+        background: linear-gradient(90deg, #f7971e 60%, #f37021 100%);
+        box-shadow: 0 4px 16px rgba(243, 112, 33, 0.13);
+      }
+      .red-btn {
+        background: #e53935;
+      }
+      .red-btn:hover {
+        background: #b71c1c;
+        box-shadow: 0 4px 16px rgba(229, 57, 53, 0.13);
+      }
+      .footer {
+        background: #003366;
+        padding: 15px 0;
+        text-align: center;
+        position: fixed;
+        width: 100vw;
+        left: 0;
+        bottom: 0;
+        display: flex;
+        justify-content: center;
+        gap: 60px;
+        z-index: 10;
+      }
+      .footer a {
+        color: white;
+        text-decoration: none;
+        font-size: 28px;
+        margin: 0 15px;
+        font-weight: bold;
+        display: inline-block;
+        transition: color 0.2s;
+      }
+      .footer a.active,
+      .footer a:hover {
+        color: #ff9900;
+      }
+      @media (max-width: 600px) {
+        .card {
+          width: 98vw;
+          padding: 18px 2vw;
+        }
+        .footer {
+          gap: 20px;
+        }
+      }
+    </style>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"
+    />
+  </head>
+  <body>
+    <div class="header">
+      <img src="assets/logo_trainu.png" alt="Train-U Logo" />
     </div>
-  </div>
-
-  <div class="footer"></div>
-
-</body>
+    <div class="container">
+      <div class="card">
+        <h2>Admin Setting</h2>
+        <button
+          class="admin-btn orange-btn"
+          onclick="window.location.href='a-listschedule.html'"
+        >
+          SCHEDULE SETTING
+        </button>
+        <button
+          class="admin-btn orange-btn"
+          onclick="window.location.href='a-listtrain.html'"
+        >
+          TRAIN SETTING
+        </button>
+        <button class="admin-btn red-btn" id="logoutBtn">LOGOUT</button>
+      </div>
+    </div>
+    <div class="footer">
+      <a href="a-home.html" class="active" title="Home">
+        <i class="fa-solid fa-house"></i>
+      </a>
+      <a href="a-listtrain.html" title="Kereta">
+        <i class="fa-solid fa-train-subway"></i>
+      </a>
+      <a href="a-listschedule.html" title="Jadwal">
+        <i class="fa-solid fa-calendar-days"></i>
+      </a>
+    </div>
+    <script>
+      document.getElementById("logoutBtn").onclick = function () {
+        localStorage.removeItem("token");
+        localStorage.removeItem("userId");
+        localStorage.removeItem("role");
+        window.location.href = "index.html";
+      };
+    </script>
+  </body>
 </html>

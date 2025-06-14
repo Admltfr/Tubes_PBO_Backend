@@ -1,167 +1,276 @@
 <!DOCTYPE html>
 <html lang="id">
-<head>
-  <meta charset="UTF-8" />
-  <title>Ticket Confirmation - Train-U</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <style>
-    body { background: #f5f5f5; }
-    .header { background-color: #003366; padding: 0 0 10px 0; text-align: center; }
-    .title-confirm {
-      text-align: center; color: #ff9900; margin: 30px 0 20px 0;
-      font-size: 2.2em; font-weight: bold; letter-spacing: 1px;
-    }
-    .ticket-card {
-      border: 8px solid #1a4b8a; border-radius: 18px; width: 420px;
-      margin: 0 auto 40px auto; padding: 35px 30px 25px 30px;
-      background-color: white; text-align: center;
-      box-shadow: 0 4px 24px rgba(0,0,0,0.07);
-    }
-    .ticket-label { color: #ff9900; font-size: 1.25em; font-weight: bold; margin-bottom: 2px; letter-spacing: 0.5px; }
-    .ticket-value { font-size: 1.15em; color: #222; margin-bottom: 2px; font-weight: 500; }
-    .route-row { display: flex; justify-content: space-between; align-items: flex-end; margin: 18px 0 0 0; gap: 18px; }
-    .route-block { display: flex; flex-direction: column; align-items: center; min-width: 90px; }
-    .route-time { font-weight: bold; font-size: 1.5em; color: #222; }
-    .route-city { font-size: 1.1em; color: #444; margin-top: 2px; }
-    .ticket-class { color: #1a4b8a; font-size: 1.15em; font-weight: bold; margin-top: 2px; }
-    .ticket-price { color: #d87c2a; font-size: 1.15em; font-weight: bold; margin-top: 2px; }
-    .btn-row { margin-top: 28px; display: flex; justify-content: center; gap: 30px; }
-    .cancel-btn {
-      background-color: #e53935; color: white; padding: 10px 28px;
-      border: none; border-radius: 8px; cursor: pointer; font-size: 1em; font-weight: bold; transition: background 0.2s;
-    }
-    .cancel-btn:hover { background: #b71c1c; }
-    .book-btn {
-      background-color: #ff9900; color: white; padding: 10px 28px;
-      border: none; border-radius: 8px; cursor: pointer; font-size: 1em; font-weight: bold; transition: background 0.2s;
-    }
-    .book-btn:hover { background: #e65100; }
-    #msg { margin-top: 18px; color: #e53935; font-weight: bold; }
-    @media (max-width: 600px) {
-      .ticket-card { width: 98vw; padding: 18px 2vw; }
-    }
-  </style>
-</head>
-<body>
-  <div class="header">
-    <img src="assets/logo_trainu.png" alt="Train-U Logo" style="width: 180px; margin-top: 30px;" >
-  </div>
-  <h2 class="title-confirm">Ticket Confirmation</h2>
-  <div class="ticket-card">
-    <div class="ticket-label">Passenger Name</div>
-    <div class="ticket-value" id="passengerName">....</div>
-    <div class="ticket-label" style="margin-top:18px;">Train ID</div>
-    <div class="ticket-value" id="trainId">....</div>
-    <div class="ticket-label" style="margin-top:18px;">Route</div>
-    <div class="route-row">
-      <div class="route-block">
-        <div class="route-time" id="departureTime">--:--</div>
-        <div class="route-city" id="departureCity">....</div>
-      </div>
-      <div style="font-size:28px;align-self:center;">→</div>
-      <div class="route-block">
-        <div class="route-time" id="arrivalTime">--:--</div>
-        <div class="route-city" id="arrivalCity">....</div>
-      </div>
-    </div>
-    <div class="ticket-label" style="margin-top:18px;">Class</div>
-    <div class="ticket-class" id="className">....</div>
-    <div class="ticket-label" style="margin-top:18px;">Harga</div>
-    <div class="ticket-price" id="price">....</div>
-    <div class="ticket-label" style="margin-top:18px;">Tanggal</div>
-    <div class="ticket-value" id="ticketDate">....</div>
-    <div class="btn-row">
-      <button class="cancel-btn" id="cancelBtn">Cancel</button>
-      <button class="book-btn" id="bookBtn">Book</button>
-    </div>
-    <div id="msg" style="margin-top:15px;color:red;display:none"></div>
-  </div>
-  <script>
-    document.addEventListener("DOMContentLoaded", function() {
-      // Helper ambil param dari URL
-      function getParam(name) {
-        const url = new URL(window.location.href);
-        return url.searchParams.get(name);
+  <head>
+    <meta charset="UTF-8" />
+    <title>Ticket Confirmation - Train-U</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <style>
+      body {
+        margin: 0;
+        font-family: Arial, sans-serif;
+        background: #f5f5f5;
       }
-      const jadwalId = getParam("jadwalId");
-      const token = localStorage.getItem("token");
-
-      // Fetch user
-      fetch("/api/users/me", {
-        headers: token ? { Authorization: "Bearer " + token } : {}
-      })
-        .then(res => res.json())
-        .then(data => {
-          document.getElementById("passengerName").textContent = data.data?.username || "-";
-        });
-
-      // Fetch jadwal
-      if (jadwalId) {
-        fetch("/api/schedules/" + jadwalId, {
-          headers: token ? { Authorization: "Bearer " + token } : {}
-        })
-          .then(res => res.json())
-          .then(data => {
-            const jadwal = data.data;
-            document.getElementById("trainId").textContent = jadwal.keretaId || "-";
-            let rute = Array.isArray(jadwal.rute) ? jadwal.rute : (jadwal.rute || "-").split("-");
-            document.getElementById("departureCity").textContent = rute[0]?.trim() || "-";
-            document.getElementById("arrivalCity").textContent = rute[rute.length-1]?.trim() || "-";
-            // Jam keberangkatan & waktu tiba (+2 jam)
-            if (jadwal.waktuKeberangkatan) {
-              const d = new Date(jadwal.waktuKeberangkatan);
-              document.getElementById("departureTime").textContent = d.toTimeString().substring(0,5);
-              // waktu tiba = waktu keberangkatan + 2 jam
-              const tiba = new Date(d.getTime() + 2 * 60 * 60 * 1000);
-              document.getElementById("arrivalTime").textContent = tiba.toTimeString().substring(0,5);
-              // Tanggal
-              document.getElementById("ticketDate").textContent = d.toLocaleDateString("id-ID", { day: "2-digit", month: "long", year: "numeric" });
-            }
-            document.getElementById("className").textContent = jadwal.kelas || "-";
-            document.getElementById("price").textContent = jadwal.harga !== undefined ? "IDR " + Number(jadwal.harga).toLocaleString("id-ID") : "-";
-          });
+      .header {
+        text-align: center;
+        padding: 30px;
+        background-color: #003366;
       }
-
-      // Cancel button
-      document.getElementById("cancelBtn").onclick = function() {
-        window.location.href = "home.html";
-      };
-
-      // Book button
-      document.getElementById("bookBtn").onclick = async function() {
-        const msgDiv = document.getElementById("msg");
-        msgDiv.style.display = "none";
-        try {
-          const penumpangId = localStorage.getItem("userId");
-          if (!penumpangId) {
-            msgDiv.style.display = "block";
-            msgDiv.textContent = "User tidak ditemukan. Silakan login ulang.";
-            return;
-          }
-          const response = await fetch("/api/pemesanan/add", {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-              ...(token ? { Authorization: "Bearer " + token } : {})
-            },
-            body: JSON.stringify({
-              jadwalId: Number(jadwalId),
-              penumpangId: Number(penumpangId)
-            })
-          });
-          if (response.ok) {
-            window.location.href = "history.html";
-          } else {
-            const data = await response.json().catch(() => ({}));
-            msgDiv.style.display = "block";
-            msgDiv.textContent = data.message || "Gagal melakukan pemesanan.";
-          }
-        } catch (err) {
-          msgDiv.style.display = "block";
-          msgDiv.textContent = "Gagal terhubung ke server.";
+      .title-confirm {
+        text-align: center;
+        color: #ff9900;
+        margin: 30px 0 20px 0;
+        font-size: 2.2em;
+        font-weight: bold;
+        letter-spacing: 1px;
+      }
+      .ticket-card {
+        border: 8px solid #1a4b8a;
+        border-radius: 18px;
+        width: 420px;
+        margin: 0 auto 40px auto;
+        padding: 35px 30px 25px 30px;
+        background-color: white;
+        text-align: center;
+        box-shadow: 0 4px 24px rgba(0, 0, 0, 0.07);
+      }
+      .ticket-label {
+        color: #ff9900;
+        font-size: 1.25em;
+        font-weight: bold;
+        margin-bottom: 2px;
+        letter-spacing: 0.5px;
+      }
+      .ticket-value {
+        font-size: 1.15em;
+        color: #222;
+        margin-bottom: 2px;
+        font-weight: 500;
+      }
+      .route-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-end;
+        margin: 18px 0 0 0;
+        gap: 18px;
+      }
+      .route-block {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        min-width: 90px;
+      }
+      .route-time {
+        font-weight: bold;
+        font-size: 1.5em;
+        color: #222;
+      }
+      .route-city {
+        font-size: 1.1em;
+        color: #444;
+        margin-top: 2px;
+      }
+      .ticket-class {
+        color: #1a4b8a;
+        font-size: 1.15em;
+        font-weight: bold;
+        margin-top: 2px;
+      }
+      .ticket-price {
+        color: #d87c2a;
+        font-size: 1.15em;
+        font-weight: bold;
+        margin-top: 2px;
+      }
+      .btn-row {
+        margin-top: 28px;
+        display: flex;
+        justify-content: center;
+        gap: 30px;
+      }
+      .cancel-btn {
+        background-color: #e53935;
+        color: white;
+        padding: 10px 28px;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        font-size: 1em;
+        font-weight: bold;
+        transition: background 0.2s;
+      }
+      .cancel-btn:hover {
+        background: #b71c1c;
+      }
+      .book-btn {
+        background-color: #ff9900;
+        color: white;
+        padding: 10px 28px;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        font-size: 1em;
+        font-weight: bold;
+        transition: background 0.2s;
+      }
+      .book-btn:hover {
+        background: #e65100;
+      }
+      #msg {
+        margin-top: 18px;
+        color: #e53935;
+        font-weight: bold;
+      }
+      @media (max-width: 600px) {
+        .ticket-card {
+          width: 98vw;
+          padding: 18px 2vw;
         }
-      };
-    });
-  </script>
-</body>
+      }
+    </style>
+  </head>
+  <body>
+    <div class="header">
+      <img
+        src="assets/logo_trainu.png"
+        alt="Train-U Logo"
+        style="width: 120px; margin-top: 30px"
+      />
+    </div>
+    <h2 class="title-confirm">Ticket Confirmation</h2>
+    <div class="ticket-card">
+      <div class="ticket-label">Passenger Name</div>
+      <div class="ticket-value" id="passengerName">....</div>
+      <div class="ticket-label" style="margin-top: 18px">Train ID</div>
+      <div class="ticket-value" id="trainId">....</div>
+      <div class="ticket-label" style="margin-top: 18px">Route</div>
+      <div class="route-row">
+        <div class="route-block">
+          <div class="route-time" id="departureTime">--:--</div>
+          <div class="route-city" id="departureCity">....</div>
+        </div>
+        <div style="font-size: 28px; align-self: center">→</div>
+        <div class="route-block">
+          <div class="route-time" id="arrivalTime">--:--</div>
+          <div class="route-city" id="arrivalCity">....</div>
+        </div>
+      </div>
+      <div class="ticket-label" style="margin-top: 18px">Class</div>
+      <div class="ticket-class" id="className">....</div>
+      <div class="ticket-label" style="margin-top: 18px">Harga</div>
+      <div class="ticket-price" id="price">....</div>
+      <div class="ticket-label" style="margin-top: 18px">Tanggal</div>
+      <div class="ticket-value" id="ticketDate">....</div>
+      <div class="btn-row">
+        <button class="cancel-btn" id="cancelBtn">Cancel</button>
+        <button class="book-btn" id="bookBtn">Book</button>
+      </div>
+      <div id="msg" style="margin-top: 15px; color: red; display: none"></div>
+    </div>
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        // Helper ambil param dari URL
+        function getParam(name) {
+          const url = new URL(window.location.href);
+          return url.searchParams.get(name);
+        }
+        const jadwalId = getParam("jadwalId");
+        const token = localStorage.getItem("token");
+
+        // Fetch user
+        fetch("/api/users/me", {
+          headers: token ? { Authorization: "Bearer " + token } : {},
+        })
+          .then((res) => res.json())
+          .then((data) => {
+            document.getElementById("passengerName").textContent =
+              data.data?.username || "-";
+          });
+
+        // Fetch jadwal
+        if (jadwalId) {
+          fetch("/api/schedules/" + jadwalId, {
+            headers: token ? { Authorization: "Bearer " + token } : {},
+          })
+            .then((res) => res.json())
+            .then((data) => {
+              const jadwal = data.data;
+              document.getElementById("trainId").textContent =
+                jadwal.keretaId || "-";
+              let rute = Array.isArray(jadwal.rute)
+                ? jadwal.rute
+                : (jadwal.rute || "-").split("-");
+              document.getElementById("departureCity").textContent =
+                rute[0]?.trim() || "-";
+              document.getElementById("arrivalCity").textContent =
+                rute[rute.length - 1]?.trim() || "-";
+              // Jam keberangkatan & waktu tiba (+2 jam)
+              if (jadwal.waktuKeberangkatan) {
+                const d = new Date(jadwal.waktuKeberangkatan);
+                document.getElementById("departureTime").textContent = d
+                  .toTimeString()
+                  .substring(0, 5);
+                // waktu tiba = waktu keberangkatan + 2 jam
+                const tiba = new Date(d.getTime() + 2 * 60 * 60 * 1000);
+                document.getElementById("arrivalTime").textContent = tiba
+                  .toTimeString()
+                  .substring(0, 5);
+                // Tanggal
+                document.getElementById("ticketDate").textContent =
+                  d.toLocaleDateString("id-ID", {
+                    day: "2-digit",
+                    month: "long",
+                    year: "numeric",
+                  });
+              }
+              document.getElementById("className").textContent =
+                jadwal.kelas || "-";
+              document.getElementById("price").textContent =
+                jadwal.harga !== undefined
+                  ? "IDR " + Number(jadwal.harga).toLocaleString("id-ID")
+                  : "-";
+            });
+        }
+
+        // Cancel button
+        document.getElementById("cancelBtn").onclick = function () {
+          window.location.href = "home.html";
+        };
+
+        // Book button
+        document.getElementById("bookBtn").onclick = async function () {
+          const msgDiv = document.getElementById("msg");
+          msgDiv.style.display = "none";
+          try {
+            const penumpangId = localStorage.getItem("userId");
+            if (!penumpangId) {
+              msgDiv.style.display = "block";
+              msgDiv.textContent = "User tidak ditemukan. Silakan login ulang.";
+              return;
+            }
+            const response = await fetch("/api/pemesanan/add", {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+                ...(token ? { Authorization: "Bearer " + token } : {}),
+              },
+              body: JSON.stringify({
+                jadwalId: Number(jadwalId),
+                penumpangId: Number(penumpangId),
+              }),
+            });
+            if (response.ok) {
+              window.location.href = "history.html";
+            } else {
+              const data = await response.json().catch(() => ({}));
+              msgDiv.style.display = "block";
+              msgDiv.textContent = data.message || "Gagal melakukan pemesanan.";
+            }
+          } catch (err) {
+            msgDiv.style.display = "block";
+            msgDiv.textContent = "Gagal terhubung ke server.";
+          }
+        };
+      });
+    </script>
+  </body>
 </html>

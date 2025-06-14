@@ -1,180 +1,210 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>Setting Train Admin</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      margin: 0; padding: 0;
-    }
-    .header {
-      background-color: #003366;
-      padding: 20px;
-      text-align: center;
-    }
-    .header img {
-      height: 60px;
-    }
-    h2 {
-      text-align: center;
-      color: orange;
-      margin-top: 20px;
-    }
-    .add-btn {
-      background-color: limegreen;
-      color: white;
-      padding: 10px 20px;
-      border: none;
-      border-radius: 8px;
-      cursor: pointer;
-      display: block;
-      margin: 20px auto;
-    }
-    table {
-      width: 90%;
-      margin: auto;
-      border-collapse: collapse;
-      margin-bottom: 60px;
-    }
-    th, td {
-      border: 2px solid black;
-      text-align: center;
-      padding: 10px;
-    }
-    .edit-btn {
-      background-color: orange;
-      color: white;
-      border: none;
-      padding: 6px 12px;
-      border-radius: 5px;
-      cursor: pointer;
-    }
-    .delete-btn {
-      background-color: red;
-      color: white;
-      border: none;
-      padding: 6px 12px;
-      border-radius: 5px;
-      cursor: pointer;
-    }
-    .footer {
-      background-color: #003366;
-      color: white;
-      text-align: center;
-      padding: 15px;
-      position: fixed;
-      bottom: 0;
-      width: 100%;
-    }
-    .footer a {
-      color: orange;
-      text-decoration: none;
-      margin: 0 15px;
-    }
-    .footer a:hover {
-      text-decoration: underline;
-    }
-  </style>
-</head>
-<body>
-
-  <div class="header">
-    <img src="/assets/logo_trainu.png" alt="Train-U Logo">
-  </div>
-
-  <h2>Setting Train Admin</h2>
-
-  <button class="add-btn" onclick="window.location.href='a-addtrain.html'">ADD TRAIN</button>
-  <table id="kereta-table">
-    <tr>
-      <th>Kereta Id</th>
-      <th>Asal</th>
-      <th>Tujuan</th>
-      <th>Edit</th>
-      <th>Delete</th>
-    </tr>
-    <!-- Data rows will be inserted here by JavaScript -->
-  </table>
-
-<script>
-  // Get token from localStorage (adjust the key if you use a different one)
-  const token = localStorage.getItem('token');
-
-  fetch('/api/trains', {
-    headers: {
-      'Accept': 'application/json',
-      'Authorization': 'Bearer ' + token
-    }
-  })
-    .then(response => {
-      const contentType = response.headers.get('content-type');
-      if (!contentType || !contentType.includes('application/json')) {
-        throw new Error('Server did not return JSON. Status: ' + response.status);
+  <head>
+    <meta charset="UTF-8" />
+    <title>Setting Train Admin</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"
+    />
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 0;
       }
-      return response.json();
-    })
-    .then(data => {
-      let keretaList = data.data || [];
-      // Sort keretaList by id ascending
-      keretaList = keretaList.sort((a, b) => a.id - b.id);
+      .header {
+        background-color: #003366;
+        padding: 20px;
+        text-align: center;
+      }
+      .header img {
+        height: 120px;
+      }
+      h2 {
+        text-align: center;
+        color: orange;
+        margin-top: 20px;
+      }
+      .add-btn {
+        background-color: limegreen;
+        color: white;
+        padding: 10px 20px;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        display: block;
+        margin: 20px auto;
+      }
+      table {
+        width: 90%;
+        margin: auto;
+        border-collapse: collapse;
+        margin-bottom: 60px;
+      }
+      th,
+      td {
+        border: 2px solid black;
+        text-align: center;
+        padding: 10px;
+      }
+      .edit-btn {
+        background-color: orange;
+        color: white;
+        border: none;
+        padding: 6px 12px;
+        border-radius: 5px;
+        cursor: pointer;
+      }
+      .delete-btn {
+        background-color: red;
+        color: white;
+        border: none;
+        padding: 6px 12px;
+        border-radius: 5px;
+        cursor: pointer;
+      }
+      .footer {
+        background: #003366;
+        padding: 15px 0;
+        text-align: center;
+        position: fixed;
+        width: 100vw;
+        left: 0;
+        bottom: 0;
+        display: flex;
+        justify-content: center;
+        gap: 60px;
+        z-index: 10;
+      }
+      .footer a {
+        color: white;
+        text-decoration: none;
+        font-size: 28px;
+        margin: 0 15px;
+        font-weight: bold;
+        display: inline-block;
+        transition: color 0.2s;
+      }
+      .footer a.active,
+      .footer a:hover {
+        color: #ff9900;
+      }
+      @media (max-width: 600px) {
+        .footer {
+          gap: 20px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="header">
+      <img src="/assets/logo_trainu.png" alt="Train-U Logo" />
+    </div>
 
-      const table = document.getElementById('kereta-table');
-      // Remove existing rows except header
-      while (table.rows.length > 1) table.deleteRow(1);
+    <h2>Setting Train Admin</h2>
 
-      keretaList.forEach((kereta) => {
-        const row = table.insertRow();
-        // Show real Kereta Id from database
-        row.insertCell().innerText = kereta.id;
-        row.insertCell().innerText = kereta.asal;
-        row.insertCell().innerText = kereta.tujuan;
+    <button class="add-btn" onclick="window.location.href='a-addtrain.html'">
+      ADD TRAIN
+    </button>
+    <table id="kereta-table">
+      <tr>
+        <th>Kereta Id</th>
+        <th>Asal</th>
+        <th>Tujuan</th>
+        <th>Edit</th>
+        <th>Delete</th>
+      </tr>
+    </table>
+    <div class="footer">
+      <a href="a-home.html" title="Home">
+        <i class="fa-solid fa-house"></i>
+      </a>
+      <a href="a-listtrain.html" class="active" title="Kereta">
+        <i class="fa-solid fa-train-subway"></i>
+      </a>
+      <a href="a-listschedule.html" title="Jadwal">
+        <i class="fa-solid fa-calendar-days"></i>
+      </a>
+    </div>
+    <script>
+      const token = localStorage.getItem("token");
 
-        // Edit button
-        const editCell = row.insertCell();
-        const editBtn = document.createElement('button');
-        editBtn.className = 'edit-btn';
-        editBtn.innerText = 'EDIT';
-        editBtn.onclick = function() {
-          window.location.href = `a-edittrain.html?id=${kereta.id}`;
-        };
-        editCell.appendChild(editBtn);
-
-        // Delete button (enabled)
-        const deleteCell = row.insertCell();
-        const deleteBtn = document.createElement('button');
-        deleteBtn.className = 'delete-btn';
-        deleteBtn.innerText = 'DELETE';
-        deleteBtn.onclick = function() {
-          if (confirm('Yakin ingin menghapus kereta ini?')) {
-            fetch(`/api/trains/delete/${kereta.id}`, {
-              method: 'DELETE',
-              headers: {
-                'Accept': 'application/json',
-                'Authorization': 'Bearer ' + token
-              }
-            })
-            .then(response => {
-              if (!response.ok) {
-                return response.json().then(err => { throw new Error(err.message || 'Gagal menghapus kereta'); });
-              }
-              return response.json();
-            })
-            .then(() => {
-              alert('Kereta berhasil dihapus!');
-              window.location.reload();
-            })
-            .catch(err => {
-              alert('Gagal menghapus kereta: ' + err.message);
-            });
+      fetch("/api/trains", {
+        headers: {
+          Accept: "application/json",
+          Authorization: "Bearer " + token,
+        },
+      })
+        .then((response) => {
+          const contentType = response.headers.get("content-type");
+          if (!contentType || !contentType.includes("application/json")) {
+            throw new Error(
+              "Server did not return JSON. Status: " + response.status
+            );
           }
-        };
-        deleteCell.appendChild(deleteBtn);
-      });
-    })
-    .catch((err) => {
-      alert('Gagal mengambil data kereta: ' + (err.message || err));
-    });
-</script>
-</body>
+          return response.json();
+        })
+        .then((data) => {
+          let keretaList = data.data || [];
+          keretaList = keretaList.sort((a, b) => a.id - b.id);
+
+          const table = document.getElementById("kereta-table");
+          while (table.rows.length > 1) table.deleteRow(1);
+
+          [...keretaList].reverse().forEach((kereta) => {
+            const row = table.insertRow();
+            row.insertCell().innerText = kereta.id;
+            row.insertCell().innerText = kereta.asal;
+            row.insertCell().innerText = kereta.tujuan;
+
+            const editCell = row.insertCell();
+            const editBtn = document.createElement("button");
+            editBtn.className = "edit-btn";
+            editBtn.innerText = "EDIT";
+            editBtn.onclick = function () {
+              window.location.href = `a-edittrain.html?id=${kereta.id}`;
+            };
+            editCell.appendChild(editBtn);
+
+            const deleteCell = row.insertCell();
+            const deleteBtn = document.createElement("button");
+            deleteBtn.className = "delete-btn";
+            deleteBtn.innerText = "DELETE";
+            deleteBtn.onclick = function () {
+              if (confirm("Yakin ingin menghapus kereta ini?")) {
+                fetch(`/api/trains/delete/${kereta.id}`, {
+                  method: "DELETE",
+                  headers: {
+                    Accept: "application/json",
+                    Authorization: "Bearer " + token,
+                  },
+                })
+                  .then((response) => {
+                    if (!response.ok) {
+                      return response.json().then((err) => {
+                        throw new Error(
+                          err.message || "Gagal menghapus kereta"
+                        );
+                      });
+                    }
+                    return response.json();
+                  })
+                  .then(() => {
+                    alert("Kereta berhasil dihapus!");
+                    window.location.reload();
+                  })
+                  .catch((err) => {
+                    alert("Gagal menghapus kereta: " + err.message);
+                  });
+              }
+            };
+            deleteCell.appendChild(deleteBtn);
+          });
+        })
+        .catch((err) => {
+          alert("Gagal mengambil data kereta: " + (err.message || err));
+        });
+    </script>
+  </body>
 </html>
