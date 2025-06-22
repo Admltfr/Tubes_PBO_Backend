@@ -12,7 +12,6 @@ import com.example.tubespbo.tubespbo.exception.ApiException;
 import com.example.tubespbo.tubespbo.mapper.JadwalResponseMapper;
 import com.example.tubespbo.tubespbo.model.request.JadwalRequest;
 import com.example.tubespbo.tubespbo.model.response.JadwalResponse;
-import com.example.tubespbo.tubespbo.model.response.KeretaResponse;
 import com.example.tubespbo.tubespbo.repository.JadwalRepository;
 import com.example.tubespbo.tubespbo.repository.KeretaRepository;
 

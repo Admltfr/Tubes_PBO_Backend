@@ -22,7 +22,6 @@ import com.example.tubespbo.tubespbo.model.response.ApiResponse;
 import com.example.tubespbo.tubespbo.model.response.JadwalResponse;
 import com.example.tubespbo.tubespbo.service.JadwalService;
 
-import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
